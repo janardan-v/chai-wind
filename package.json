@@ -1,8 +1,9 @@
 {
-  "name": "chai-wind",
-  "version": "1.0.0",
+  "name": "chai-winder",
+  "version": "1.0.1",
   "type": "module",
-  "main": "index.js",
+  "main": "src/index.js",
+  "files": ["src"],
   "keywords": [
     "css",
     "utility",
@@ -10,5 +11,5 @@
     "styling"
   ],
   "author": "Janardhan Verma",
-  "license": "MIT"
+  "license": "ISC"
 }
