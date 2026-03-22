@@ -22,15 +22,17 @@ Or use it directly from a local file — just drop `index.js` and `maps.js` next
 <!DOCTYPE html>
 <html>
 <head>
-  <script type="module">
-    import { applyChaiStyles } from 'chai-winder'
-    applyChaiStyles()
-  </script>
 </head>
 <body>
   <div class="chai-bg-22c55e chai-text-white chai-p-24 chai-rounded-8 chai-fw-700 chai-f-20">
     Hello, chai-wind 🍵
   </div>
+
+  <script type="module">
+  import { applyChaiStyles } from "https://esm.sh/chai-winder@1.0.9";
+  applyChaiStyles();
+</script>
+
 </body>
 </html>
 ```
@@ -601,14 +603,7 @@ chai-wind/
 
 ---
 
-## Contributing
 
-1. Fork the repo
-2. Add your utility in `index.js` under the appropriate `switch` case
-3. Add any new value maps or key lists to `maps.js`
-4. Test it in the `demo/index.html` showcase page
-
----
 
 ## License
 
