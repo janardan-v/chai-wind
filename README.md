@@ -1,0 +1,615 @@
+# chai-wind 🍵
+
+> utility-first CSS-in-JS for the browser — zero dependencies, no build step, no bundler.
+
+chai-wind lets you style HTML elements using `chai-` prefixed class names. Call `applyChaiStyles()` once and every `chai-*` class on the page gets converted to an inline style via JavaScript. No stylesheet is generated, no build tool is needed — it works in any HTML file with a plain `<script type="module">` tag.
+
+---
+
+## Installation
+
+```bash
+npm install chai-wind
+```
+
+Or use it directly from a local file — just drop `index.js` and `maps.js` next to your HTML.
+
+---
+
+## Quick start
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="module">
+    import { applyChaiStyles } from 'chai-wind'
+    applyChaiStyles()
+  </script>
+</head>
+<body>
+  <div class="chai-bg-22c55e chai-text-white chai-p-24 chai-rounded-8 chai-fw-700 chai-f-20">
+    Hello, chai-wind 🍵
+  </div>
+</body>
+</html>
+```
+
+`applyChaiStyles()` attaches a `DOMContentLoaded` listener, queries every element with a `chai-` class, and applies styles directly via `element.style.*`.
+
+---
+
+## How it works
+
+Every `chai-*` class follows this pattern:
+
+```
+chai - {key} - {value}
+```
+
+| Part | Example | Meaning |
+|---|---|---|
+| `chai` | — | required prefix |
+| `{key}` | `bg` | the CSS property group |
+| `{value}` | `22c55e` | the value to apply |
+
+The class is split on `-`, the first segment (`chai`) is dropped, then the key routes to a CSS property and the value is formatted (adding `px`, `#`, etc.) before being set as an inline style.
+
+---
+
+## Class reference
+
+### Background color
+
+```
+chai-bg-{name}     → named color (black white red green blue yellow purple orange pink gray silver)
+chai-bg-{hex}      → hex color without # (e.g. chai-bg-22c55e → background-color: #22c55e)
+```
+
+```html
+<div class="chai-bg-22c55e">green background</div>
+<div class="chai-bg-red">named red</div>
+```
+
+---
+
+### Text color & transform
+
+```
+chai-text-{name}         → named color
+chai-text-{hex}          → hex color without #
+chai-text-center         → text-align: center
+chai-text-left           → text-align: left
+chai-text-right          → text-align: right
+chai-text-justify        → text-align: justify
+chai-text-uppercase      → text-transform: uppercase
+chai-text-lowercase      → text-transform: lowercase
+chai-text-capitalize     → text-transform: capitalize
+```
+
+```html
+<p class="chai-text-22c55e chai-text-center chai-text-uppercase">chai-wind</p>
+```
+
+---
+
+### Font size & weight
+
+```
+chai-f-{n}      → font-size: {n}px  (or pass a CSS keyword like "inherit")
+chai-fw-{n}     → font-weight: {n}  (100 200 300 400 500 600 700 800 900)
+```
+
+```html
+<h1 class="chai-f-56 chai-fw-700">Big bold heading</h1>
+<p  class="chai-f-16 chai-fw-400">Normal body text</p>
+```
+
+---
+
+### Opacity
+
+```
+chai-op-{n}   → opacity: {n}   (0 to 1, decimals supported)
+```
+
+```html
+<div class="chai-op-0.5">50% opacity</div>
+<div class="chai-op-0.1">very faint</div>
+```
+
+---
+
+### Display
+
+```
+chai-dp-flex          → display: flex
+chai-dp-grid          → display: grid
+chai-dp-block         → display: block
+chai-dp-inline        → display: inline
+chai-dp-inline-block  → display: inline-block
+chai-dp-none          → display: none
+```
+
+---
+
+### Width & height
+
+```
+chai-w-{n}      → width: {n}px     (or keyword e.g. chai-w-full → width: full — pass CSS keyword)
+chai-h-{n}      → height: {n}px
+chai-wmin-{n}   → min-width: {n}px
+chai-wmax-{n}   → max-width: {n}px
+chai-hmin-{n}   → min-height: {n}px
+chai-hmax-{n}   → max-height: {n}px
+```
+
+```html
+<div class="chai-w-320 chai-h-200 chai-wmax-640">sized box</div>
+```
+
+> **Centering pattern** — combine `chai-wmax-1280` with `chai-mx-auto` to create a centered content wrapper.
+
+---
+
+### Padding
+
+```
+chai-p-{n}    → padding: {n}px          (all sides)
+chai-pt-{n}   → padding-top: {n}px
+chai-pr-{n}   → padding-right: {n}px
+chai-pb-{n}   → padding-bottom: {n}px
+chai-pl-{n}   → padding-left: {n}px
+```
+
+```html
+<div class="chai-p-24">even padding all sides</div>
+<div class="chai-pt-8 chai-pb-8 chai-pl-16 chai-pr-16">pill padding</div>
+```
+
+---
+
+### Margin
+
+```
+chai-m-{n}     → margin: {n}px          (all sides)
+chai-m-auto    → margin: auto           (center block elements)
+chai-mt-{n}    → margin-top: {n}px
+chai-mr-{n}    → margin-right: {n}px
+chai-mb-{n}    → margin-bottom: {n}px
+chai-ml-{n}    → margin-left: {n}px
+chai-mx-{n}    → margin-left + margin-right: {n}px
+chai-mx-auto   → margin-left: auto; margin-right: auto   ← center a block
+chai-my-{n}    → margin-top + margin-bottom: {n}px
+```
+
+```html
+<!-- center a max-width wrapper -->
+<div class="chai-wmax-1280 chai-mx-auto">centered content</div>
+
+<!-- vertical spacing -->
+<p class="chai-mb-24">paragraph with bottom margin</p>
+```
+
+---
+
+### Gap (flex & grid)
+
+```
+chai-g-{n}   → row-gap: {n}px; column-gap: {n}px
+```
+
+```html
+<div class="chai-dp-flex chai-g-16">
+  <div>A</div>
+  <div>B</div>
+</div>
+```
+
+---
+
+### Flexbox
+
+**Direction**
+
+```
+chai-flex-row       → flex-direction: row
+chai-flex-col       → flex-direction: column
+chai-flex-row-rev   → flex-direction: row-reverse
+chai-flex-col-rev   → flex-direction: column-reverse
+```
+
+**Justify content** (main axis)
+
+```
+chai-justify-start    → justify-content: start
+chai-justify-center   → justify-content: center
+chai-justify-end      → justify-content: end
+chai-justify-between  → justify-content: space-between
+chai-justify-around   → justify-content: space-around
+chai-justify-evenly   → justify-content: space-evenly
+```
+
+**Align items** (cross axis, single row)
+
+```
+chai-items-start    → align-items: flex-start
+chai-items-center   → align-items: center
+chai-items-end      → align-items: flex-end
+chai-items-stretch  → align-items: stretch
+```
+
+**Align content** (cross axis, multi-row — requires flex-wrap)
+
+```
+chai-align-start    → align-content: flex-start
+chai-align-center   → align-content: center
+chai-align-end      → align-content: flex-end
+chai-align-stretch  → align-content: stretch
+chai-align-between  → align-content: space-between
+chai-align-around   → align-content: space-around
+chai-align-evenly   → align-content: space-evenly
+```
+
+```html
+<div class="chai-dp-flex chai-flex-row chai-justify-between chai-items-center chai-g-16">
+  <span>left</span>
+  <span>right</span>
+</div>
+```
+
+---
+
+### Grid
+
+```
+chai-cols-{n}   → grid-template-columns: repeat({n}, 1fr)
+chai-rows-{n}   → grid-template-rows: repeat({n}, 1fr)
+```
+
+```html
+<div class="chai-dp-grid chai-cols-3 chai-g-12">
+  <div>1</div>
+  <div>2</div>
+  <div>3</div>
+</div>
+```
+
+---
+
+### Border
+
+```
+chai-border-{width}-{color}              → {width}px solid {color}
+chai-border-{width}-{color}-dashed      → {width}px dashed {color}
+chai-border-{width}-{color}-dotted      → {width}px dotted {color}
+```
+
+Color can be a named color or a hex without `#`.
+
+```html
+<div class="chai-border-1-22c55e">1px solid green border</div>
+<div class="chai-border-2-fb7185-dashed">2px dashed red border</div>
+<div class="chai-border-2-a78bfa-dotted">2px dotted purple border</div>
+```
+
+---
+
+### Border radius
+
+```
+chai-rounded-{n}    → border-radius: {n}px (applied to all 4 corners)
+chai-rounded-999    → pill shape (use a large value like 999)
+```
+
+```html
+<button class="chai-rounded-8">slightly rounded</button>
+<span   class="chai-rounded-999">pill badge</span>
+```
+
+---
+
+### Position
+
+```
+chai-fix-rel     → position: relative
+chai-fix-abs     → position: absolute
+chai-fix-fixed   → position: fixed
+chai-fix-sticky  → position: sticky
+```
+
+**Offsets** (all in px)
+
+```
+chai-t-{n}   → top: {n}px
+chai-r-{n}   → right: {n}px
+chai-b-{n}   → bottom: {n}px
+chai-l-{n}   → left: {n}px
+chai-z-{n}   → z-index: {n}
+```
+
+```html
+<!-- fixed header -->
+<nav class="chai-fix-fixed chai-t-0 chai-l-0 chai-r-0 chai-z-999">...</nav>
+
+<!-- absolute badge -->
+<div class="chai-fix-rel">
+  <span class="chai-fix-abs chai-t-8 chai-r-8">badge</span>
+</div>
+```
+
+---
+
+### Overflow
+
+```
+chai-ovr-hidden   → overflow: hidden
+chai-ovr-auto     → overflow: auto
+chai-ovr-scroll   → overflow: scroll
+chai-ovr-x-auto   → overflow-x: auto
+chai-ovr-x-hidden → overflow-x: hidden
+chai-ovr-y-auto   → overflow-y: auto
+chai-ovr-y-hidden → overflow-y: hidden
+```
+
+---
+
+### Transforms
+
+Each transform key sets `element.style.transform` directly.
+
+```
+chai-scale-{n}       → transform: scale({n})
+chai-rotate-{deg}    → transform: rotate({deg})      e.g. chai-rotate-45deg
+chai-tX-{n}          → transform: translateX({n}px)
+chai-tY-{n}          → transform: translateY({n}px)
+```
+
+```html
+<div class="chai-scale-1.2">scaled up 20%</div>
+<div class="chai-rotate-45deg">45° rotated</div>
+<div class="chai-tX-24">shifted 24px right</div>
+<div class="chai-tY-16">shifted 16px up</div>
+```
+
+> **Note** — only one transform can be active at a time since each overwrites `style.transform`. Combine transforms in a single CSS rule or inline style if needed.
+
+---
+
+### Transition
+
+```
+chai-transition-{property}-{duration}-{timing}
+```
+
+| Segment | Default | Example |
+|---|---|---|
+| property | `all` | `opacity`, `transform`, `color` |
+| duration | `0.2` | `0.3` → `0.3s` · `300ms` → kept as-is |
+| timing | `ease` | `ease-in` `ease-out` `ease-in-out` `linear` |
+
+```html
+<button class="chai-transition-all-0.3-ease">smooth all</button>
+<div    class="chai-transition-transform-0.5-ease-in-out">transform only</div>
+<a      class="chai-transition-color-0.18-ease">color fade</a>
+```
+
+Pairs perfectly with CSS `:hover` rules:
+
+```css
+.my-btn:hover { background-color: #22c55e }
+```
+
+```html
+<button class="chai-bg-111111 chai-transition-all-0.3-ease my-btn">hover me</button>
+```
+
+---
+
+### Cursor
+
+```
+chai-cur-ptr         → cursor: pointer
+chai-cur-NA          → cursor: not-allowed
+chai-cur-text        → cursor: text
+chai-cur-help        → cursor: help
+chai-cur-move        → cursor: move
+chai-cur-grab        → cursor: grab
+chai-cur-crosshair   → cursor: crosshair
+chai-cur-wait        → cursor: wait
+```
+
+---
+
+### Text decoration
+
+```
+chai-dec-underline-{color}-{width}    → text-decoration: underline {color} {width}px
+chai-dec-overline-{color}-{width}     → text-decoration: overline  {color} {width}px
+chai-dec-through-{color}-{width}      → text-decoration: line-through {color} {width}px
+chai-dec-none                         → text-decoration: none
+```
+
+```html
+<span class="chai-dec-underline-22c55e-2">green underline</span>
+<span class="chai-dec-through-red-1">strikethrough</span>
+```
+
+---
+
+## Named colors
+
+The following color keywords can be used directly with `chai-bg-` and `chai-text-`:
+
+```
+black   white   red    green   blue
+yellow  purple  orange pink    gray   silver
+```
+
+Any other color must be written as a hex value without the `#`:
+
+```html
+<div class="chai-bg-22c55e">  ✓ hex — #22c55e   </div>
+<div class="chai-bg-green">   ✓ named            </div>
+<div class="chai-bg-#22c55e"> ✗ do NOT include # </div>
+```
+
+---
+
+## Patterns & recipes
+
+### Centered page wrapper
+
+```html
+<div class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32">
+  page content
+</div>
+```
+
+### Flex card row
+
+```html
+<div class="chai-dp-flex chai-flex-row chai-justify-between chai-items-center chai-g-16 chai-p-24 chai-bg-111111 chai-rounded-12">
+  <span class="chai-f-16 chai-fw-600 chai-text-e8e8e8">Card title</span>
+  <span class="chai-f-13 chai-text-555555">metadata</span>
+</div>
+```
+
+### Responsive grid
+
+```html
+<div class="chai-dp-grid chai-cols-3 chai-g-16">
+  <div class="chai-bg-111111 chai-rounded-8 chai-p-20">item 1</div>
+  <div class="chai-bg-111111 chai-rounded-8 chai-p-20">item 2</div>
+  <div class="chai-bg-111111 chai-rounded-8 chai-p-20">item 3</div>
+</div>
+```
+
+### Pill badge
+
+```html
+<span class="chai-bg-22c55e chai-text-0a0a0a chai-f-11 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-12 chai-pr-12 chai-rounded-999 chai-text-uppercase">
+  active
+</span>
+```
+
+### Animated card with transition
+
+```html
+<style>
+  .card:hover { transform: translateY(-8px); border-color: #22c55e44 }
+</style>
+
+<div class="card chai-bg-111111 chai-border-1-252525 chai-rounded-12 chai-p-24 chai-transition-all-0.3-ease">
+  hover me
+</div>
+```
+
+### Fixed nav bar
+
+```html
+<nav class="chai-fix-fixed chai-t-0 chai-l-0 chai-r-0 chai-z-999 chai-bg-0a0a0a">
+  <div class="chai-wmax-1280 chai-mx-auto chai-dp-flex chai-justify-between chai-items-center chai-pt-14 chai-pb-14 chai-pl-32 chai-pr-32">
+    <span class="chai-text-22c55e chai-fw-700 chai-f-18">logo</span>
+    <a href="#" class="chai-text-555555 chai-f-14 chai-transition-color-0.18-ease">Link</a>
+  </div>
+</nav>
+```
+
+### Absolute positioning demo
+
+```html
+<div class="chai-fix-rel chai-bg-161616 chai-rounded-8 chai-h-120">
+  <span class="chai-fix-abs chai-t-12 chai-l-12 chai-bg-22c55e chai-text-0a0a0a chai-f-11 chai-fw-700 chai-rounded-4 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8">top-left</span>
+  <span class="chai-fix-abs chai-b-12 chai-r-12 chai-bg-fb7185 chai-text-0a0a0a chai-f-11 chai-fw-700 chai-rounded-4 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8">bottom-right</span>
+</div>
+```
+
+---
+
+## What chai-wind does NOT handle
+
+These CSS properties have no chai-wind equivalent and require a `<style>` block or inline `style=""`:
+
+| Property | Workaround |
+|---|---|
+| `font-family` | `style="font-family: ..."` or `body { font-family: ... }` in CSS |
+| `line-height` | `style="line-height: ..."` |
+| `letter-spacing` | CSS class e.g. `.tracking { letter-spacing: 0.12em }` |
+| `flex: 1` | CSS class `.flex-1 { flex: 1 }` |
+| `flex-wrap` | CSS class `.flex-wrap { flex-wrap: wrap }` |
+| `flex-shrink: 0` | CSS class `.shrink-0 { flex-shrink: 0 }` |
+| `border-radius: 50%` | CSS class for circle dots |
+| `:hover` | CSS hover rules — pair with `chai-transition-*` for animation |
+| `@keyframes` / animation | CSS keyframes block |
+| `backdrop-filter` | Inline `style=""` or CSS class |
+| `white-space` | Inline `style=""` |
+| `scroll-margin-top` | CSS `section { scroll-margin-top: ... }` |
+| Side-specific borders | `style="border-top: ..."` — chai-border sets all 4 sides |
+| `%` width values | `style="width: 80%"` — chai-w only accepts px |
+| Combining transforms | `style="transform: scale(1.2) rotate(45deg)"` — chai sets one at a time |
+
+---
+
+## How classes are parsed
+
+```
+"chai-bg-22c55e"
+  split("-") → ["chai", "bg", "22c55e"]
+  slice(1)   → ["bg", "22c55e"]
+  key        → "bg"
+  value      → "22c55e"
+  result     → element.style.backgroundColor = "#22c55e"
+```
+
+```
+"chai-transition-all-0.3-ease-in-out"
+  split("-") → ["chai", "transition", "all", "0.3", "ease", "in", "out"]
+  key        → "transition"
+  property   → "all"
+  duration   → "0.3" → "0.3s"
+  timing     → ["ease", "in", "out"].join("-") → "ease-in-out"
+  result     → element.style.transition = "all 0.3s ease-in-out"
+```
+
+---
+
+## Project structure
+
+```
+chai-wind/
+├── index.js    ← applyChaiStyles() — the parser
+├── maps.js     ← all value maps, key lists, color tables
+└── README.md
+```
+
+`maps.js` exports everything the parser needs:
+
+| Export | Purpose |
+|---|---|
+| `valueMaps` | key → CSS property name (or object for multi-value keys) |
+| `flexdirection` | flex-direction value map |
+| `justifyMap` | justify-content value map |
+| `alignMap` | align-content value map |
+| `itemsMap` | align-items value map |
+| `colors` | named color whitelist |
+| `spacingKeys` | keys that route to the spacing branch |
+| `positionKeys` | keys that route to the position branch |
+| `borderRadiusKeys` | all 4 corner property names |
+| `overFlowMap` | overflow value map + x/y keys |
+| `keyString` | object-mapped keys → their CSS property name |
+
+---
+
+## Contributing
+
+1. Fork the repo
+2. Add your utility in `index.js` under the appropriate `switch` case
+3. Add any new value maps or key lists to `maps.js`
+4. Test it in the `demo/index.html` showcase page
+
+---
+
+## License
+
+ISC © Janardhan Verma

@@ -1,0 +1,14 @@
+{
+  "name": "chai-wind",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "keywords": [
+    "css",
+    "utility",
+    "runtime",
+    "styling"
+  ],
+  "author": "Janardhan Verma",
+  "license": "MIT"
+}

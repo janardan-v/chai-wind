@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>chai-wind — utility showcase</title>
+  <style>
+    /* box-model, scroll, font — chai can't */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Fira Code', Consolas, monospace;
+      line-height: 1.6
+    }
+
+    pre,
+    code {
+      font-family: inherit
+    }
+
+    a {
+      text-decoration: none
+    }
+
+    section {
+      scroll-margin-top: 64px
+    }
+
+    /* backdrop-filter — chai can't */
+    .nav-fixed {
+      backdrop-filter: blur(16px)
+    }
+
+    /* letter-spacing, line-height — chai can't */
+    .tracking {
+      letter-spacing: 0.12em
+    }
+
+    .tracking-xl {
+      letter-spacing: 0.22em
+    }
+
+    .leading-none {
+      line-height: 1
+    }
+
+    .leading-tall {
+      line-height: 1.9
+    }
+
+    /* flex helpers — chai can't */
+    .flex-1 {
+      flex: 1
+    }
+
+    .flex-wrap {
+      flex-wrap: wrap
+    }
+
+    .shrink-0 {
+      flex-shrink: 0
+    }
+
+    /* dot — border-radius:50% with tiny fixed px */
+    .dot-6 {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    /* hover — chai has no :hover. Only 5 distinct behaviors needed across the whole page */
+    .h-green:hover {
+      color: #22c55e !important;
+      transition: color .18s ease
+    }
+
+    .h-bright:hover {
+      filter: brightness(1.18);
+      transition: filter .18s ease
+    }
+
+    .h-bg:hover {
+      background-color: #1e1e1e !important;
+      transition: background .18s ease
+    }
+
+    .h-card:hover {
+      border-color: #22c55e44 !important;
+      transform: translateY(-10px) !important;
+      transition: all .3s ease
+    }
+
+    .h-scale:hover {
+      transform: scale(1.55) rotate(18deg) !important
+    }
+
+    .h-tx:hover {
+      transform: translateX(56px) !important
+    }
+
+    .h-ty:hover {
+      transform: translateY(-44px) !important
+    }
+
+    /* keyframes — chai has no animation */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .a1 {
+      animation: fadeUp .65s ease both
+    }
+
+    .a2 {
+      animation: fadeUp .65s .1s ease both
+    }
+
+    .a3 {
+      animation: fadeUp .65s .2s ease both
+    }
+
+    .a4 {
+      animation: fadeUp .65s .3s ease both
+    }
+
+    .a5 {
+      animation: fadeUp .65s .4s ease both
+    }
+
+    .spin {
+      animation: spin 3s linear infinite
+    }
+  </style>
+</head>
+
+<body class="chai-bg-0a0a0a chai-text-e8e8e8">
+
+  <!-- ═══════ NAV ═══════ -->
+  <nav class="nav-fixed chai-fix-fixed chai-t-0 chai-l-0 chai-r-0 chai-z-999 chai-bg-0a0a0a"
+    style="border-bottom:1px solid #1e1e1e">
+    <div
+      class="chai-wmax-1280 chai-mx-auto chai-dp-flex chai-items-center chai-justify-between chai-pt-14 chai-pb-14 chai-pl-32 chai-pr-32">
+      <div class="chai-dp-flex chai-items-center chai-g-12">
+        <span class="chai-text-22c55e chai-fw-700 chai-f-16">chai-wind</span>
+        <span
+          class="chai-bg-22c55e chai-text-0a0a0a chai-f-9 chai-fw-700 chai-rounded-4 chai-pt-2 chai-pb-2 chai-pl-6 chai-pr-6 chai-text-uppercase tracking">alpha</span>
+        <span class="chai-text-444444 chai-f-12">· zero deps · esm · ~3kb</span>
+      </div>
+      <div class="chai-dp-flex chai-items-center chai-g-22">
+        <a href="#colors" class="chai-text-555555 chai-f-12 chai-text-uppercase tracking h-green">Colors</a>
+        <a href="#typography" class="chai-text-555555 chai-f-12 chai-text-uppercase tracking h-green">Typography</a>
+        <a href="#spacing" class="chai-text-555555 chai-f-12 chai-text-uppercase tracking h-green">Spacing</a>
+        <a href="#layout" class="chai-text-555555 chai-f-12 chai-text-uppercase tracking h-green">Layout</a>
+        <a href="#effects" class="chai-text-555555 chai-f-12 chai-text-uppercase tracking h-green">Effects</a>
+        <a href="#position" class="chai-text-555555 chai-f-12 chai-text-uppercase tracking h-green">Position</a>
+        <a href="#components" class="chai-text-555555 chai-f-12 chai-text-uppercase tracking h-green">Components</a>
+        <a href="#cheatsheet" class="chai-text-555555 chai-f-12 chai-text-uppercase tracking h-green">Cheat Sheet</a>
+        <div class="chai-bg-141414 chai-border-1-2a2a2a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12">
+          <code class="chai-text-22c55e chai-f-12">npm i chai-wind</code>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════ HERO ═══════ -->
+  <section class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32 chai-pt-148 chai-pb-100">
+    <div class="a1 chai-dp-flex chai-items-center chai-g-10 chai-mb-28">
+      <div class="dot-6 chai-bg-22c55e"></div>
+      <span class="chai-text-22c55e chai-f-14 chai-text-uppercase tracking-xl">utility-first css-in-js · zero build ·
+        pure browser</span>
+    </div>
+    <h1 class="a2 chai-f-96 chai-fw-700 chai-text-e8e8e8 leading-none chai-m-0 chai-mb-4"
+      style="letter-spacing:-0.02em">style with</h1>
+    <h1 class="a2 chai-f-96 chai-fw-700 chai-text-22c55e leading-none chai-m-0 chai-mb-36"
+      style="letter-spacing:-0.02em">class names<span class="chai-text-f59e0b">.</span></h1>
+    <p class="a3 chai-m-0 chai-text-777777 chai-f-22 chai-mb-44 chai-wmax-560 leading-tall">
+      Add <code
+        class="chai-bg-141414 chai-border-1-252525 chai-text-22c55e chai-rounded-4 chai-pt-2 chai-pb-2 chai-pl-7 chai-pr-7 chai-f-18">chai-bg-22c55e</code>
+      to any element, call <code
+        class="chai-bg-141414 chai-border-1-252525 chai-text-f59e0b chai-rounded-4 chai-pt-2 chai-pb-2 chai-pl-7 chai-pr-7 chai-f-18">applyChaiStyles()</code>,
+      and styles land directly. No bundler. No config. No build step.
+    </p>
+    <div class="a4 chai-dp-flex chai-items-center chai-g-10 chai-mb-60 chai-wmax-500">
+      <div
+        class="flex-1 chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-pt-13 chai-pb-13 chai-pl-20 chai-pr-20 chai-dp-flex chai-items-center chai-justify-between">
+        <code class="chai-f-18 chai-text-aaaaaa">$ npm install chai-wind</code>
+        <span class="chai-text-444444 chai-f-14 chai-text-uppercase tracking">esm</span>
+      </div>
+      <button
+        class="shrink-0 chai-bg-22c55e chai-text-0a0a0a chai-fw-700 chai-f-18 chai-pt-13 chai-pb-13 chai-pl-24 chai-pr-24 chai-rounded-8 chai-cur-ptr h-bright">Get
+        Started →</button>
+    </div>
+    <div class="a5 chai-dp-flex chai-items-stretch chai-wmax-520 chai-border-1-1e1e1e chai-rounded-8 chai-ovr-hidden">
+      <div class="flex-1 chai-dp-flex chai-flex-col chai-pt-22 chai-pb-22 chai-pl-28 chai-pr-28"
+        style="border-right:1px solid #1e1e1e">
+        <span class="chai-text-22c55e chai-fw-700 chai-f-40">0</span>
+        <span class="chai-text-555555 chai-f-14 chai-text-uppercase tracking">dependencies</span>
+      </div>
+      <div class="flex-1 chai-dp-flex chai-flex-col chai-pt-22 chai-pb-22 chai-pl-28 chai-pr-28"
+        style="border-right:1px solid #1e1e1e">
+        <span class="chai-text-22c55e chai-fw-700 chai-f-40">40+</span>
+        <span class="chai-text-555555 chai-f-14 chai-text-uppercase tracking">utilities</span>
+      </div>
+      <div class="flex-1 chai-dp-flex chai-flex-col chai-pt-22 chai-pb-22 chai-pl-28 chai-pr-28"
+        style="border-right:1px solid #1e1e1e">
+        <span class="chai-text-22c55e chai-fw-700 chai-f-40">~3kb</span>
+        <span class="chai-text-555555 chai-f-14 chai-text-uppercase tracking">minified</span>
+      </div>
+      <div class="flex-1 chai-dp-flex chai-flex-col chai-pt-22 chai-pb-22 chai-pl-28 chai-pr-28">
+        <span class="chai-text-22c55e chai-fw-700 chai-f-40">ESM</span>
+        <span class="chai-text-555555 chai-f-14 chai-text-uppercase tracking">module</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="chai-h-1 chai-bg-1e1e1e"></div>
+
+  <!-- ═══════ 01 — COLORS ═══════ -->
+  <section id="colors" class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32 chai-pt-80 chai-pb-80">
+    <div class="chai-dp-flex chai-items-center chai-g-16 chai-mb-56">
+      <span class="chai-text-f59e0b chai-fw-700 chai-f-20 chai-text-uppercase tracking-xl">01</span>
+      <div class="chai-h-1 flex-1 chai-bg-1e1e1e"></div>
+      <span class="chai-text-888888 chai-f-40 chai-text-uppercase tracking">Colors</span>
+    </div>
+
+    <p class="chai-m-0 chai-text-666666 chai-f-14 chai-text-uppercase tracking-xl chai-mb-16">Named colors</p>
+    <div class="chai-dp-grid chai-cols-4 chai-g-3 chai-mb-3">
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-red    chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-red</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-green  chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-green</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-blue   chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-blue</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-yellow  chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-yellow</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-purple  chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-purple</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-orange  chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-orange</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-pink    chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-pink</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-gray    chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-gray</code>
+      </div>
+    </div>
+
+    <p class="chai-m-0 chai-text-666666 chai-f-14 chai-text-uppercase tracking-xl chai-mb-16 chai-mt-40">Hex colors —
+      drop the #</p>
+    <div class="chai-dp-grid chai-cols-4 chai-g-3 chai-mb-40">
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-22c55e chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-22c55e</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-38bdf8 chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-38bdf8</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-f59e0b chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-f59e0b</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-fb7185 chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-fb7185</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-a78bfa chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-a78bfa</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-f97316 chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-f97316</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-ec4899 chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-ec4899</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-16 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-bg-14b8a6 chai-rounded-4 chai-h-60"></div><code
+          class="chai-text-555555 chai-f-14">chai-bg-14b8a6</code>
+      </div>
+    </div>
+
+    <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+      <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-text-{color}</p>
+      <div class="chai-dp-flex chai-g-24 flex-wrap">
+        <span class="chai-f-30 chai-fw-700 chai-text-22c55e">22c55e</span>
+        <span class="chai-f-30 chai-fw-700 chai-text-38bdf8">38bdf8</span>
+        <span class="chai-f-30 chai-fw-700 chai-text-f59e0b">f59e0b</span>
+        <span class="chai-f-30 chai-fw-700 chai-text-fb7185">fb7185</span>
+        <span class="chai-f-30 chai-fw-700 chai-text-a78bfa">a78bfa</span>
+        <span class="chai-f-30 chai-fw-700 chai-text-f97316">f97316</span>
+        <span class="chai-f-30 chai-fw-700 chai-text-red">red</span>
+        <span class="chai-f-30 chai-fw-700 chai-text-white">white</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="chai-h-1 chai-bg-1e1e1e"></div>
+
+  <!-- ═══════ 02 — TYPOGRAPHY ═══════ -->
+  <section id="typography" class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32 chai-pt-80 chai-pb-80">
+    <div class="chai-dp-flex chai-items-center chai-g-16 chai-mb-56">
+      <span class="chai-text-f59e0b chai-fw-700 chai-f-20 chai-text-uppercase tracking-xl">02</span>
+      <div class="chai-h-1 flex-1 chai-bg-1e1e1e"></div>
+      <span class="chai-text-888888 chai-f-40 chai-text-uppercase tracking">Typography</span>
+    </div>
+    <div class="chai-dp-grid chai-cols-2 chai-g-3 chai-mb-3">
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-f-{n} · font-size
+        </p>
+        <div class="chai-dp-flex chai-flex-col chai-g-14">
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span class="chai-f-14 chai-text-e8e8e8">The
+              quick brown fox</span><code class="chai-text-555555 chai-f-14">f-11</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span class="chai-f-18 chai-text-e8e8e8">The
+              quick brown fox</span><code class="chai-text-555555 chai-f-14">f-14</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span class="chai-f-26 chai-text-e8e8e8">The
+              quick brown</span><code class="chai-text-555555 chai-f-14">f-18</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span class="chai-f-32 chai-text-e8e8e8">The
+              quick</span><code class="chai-text-555555 chai-f-14">f-24</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-f-48 chai-text-e8e8e8">Aa</span><code class="chai-text-555555 chai-f-14">f-36</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-f-64 chai-text-e8e8e8">Aa</span><code class="chai-text-555555 chai-f-14">f-56</code></div>
+        </div>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-fw-{n} · font-weight
+        </p>
+        <div class="chai-dp-flex chai-flex-col chai-g-12">
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-fw-100 chai-f-22 chai-text-e8e8e8">The quick brown fox</span><code
+              class="chai-text-555555 chai-f-14">fw-100</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-fw-300 chai-f-22 chai-text-e8e8e8">The quick brown fox</span><code
+              class="chai-text-555555 chai-f-14">fw-300</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-fw-400 chai-f-22 chai-text-e8e8e8">The quick brown fox</span><code
+              class="chai-text-555500 chai-f-14">fw-400</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-fw-500 chai-f-22 chai-text-e8e8e8">The quick brown fox</span><code
+              class="chai-text-555555 chai-f-14">fw-500</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-fw-600 chai-f-22 chai-text-e8e8e8">The quick brown fox</span><code
+              class="chai-text-555555 chai-f-14">fw-600</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-fw-700 chai-f-22 chai-text-e8e8e8">The quick brown fox</span><code
+              class="chai-text-555555 chai-f-14">fw-700</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-fw-800 chai-f-22 chai-text-e8e8e8">The quick brown fox</span><code
+              class="chai-text-555555 chai-f-14">fw-800</code></div>
+          <div class="chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-fw-900 chai-f-22 chai-text-e8e8e8">The quick brown fox</span><code
+              class="chai-text-555555 chai-f-14">fw-900</code></div>
+        </div>
+      </div>
+    </div>
+    <div class="chai-dp-grid chai-cols-2 chai-g-3 chai-mb-3">
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-text-{align}</p>
+        <div class="chai-dp-flex chai-flex-col chai-g-8">
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-12">
+            <p class="chai-m-0 chai-f-20 chai-text-e8e8e8 chai-text-left">Left aligned text</p><code
+              class="chai-text-555555 chai-f-14">chai-text-left</code>
+          </div>
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-12">
+            <p class="chai-m-0 chai-f-20 chai-text-e8e8e8 chai-text-center">Center aligned text</p><code
+              class="chai-text-555555 chai-f-14">chai-text-center</code>
+          </div>
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-12">
+            <p class="chai-m-0 chai-f-20 chai-text-e8e8e8 chai-text-right">Right aligned text</p><code
+              class="chai-text-555555 chai-f-14">chai-text-right</code>
+          </div>
+        </div>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-text-{transform} ·
+          chai-op-{n}</p>
+        <div class="chai-dp-flex chai-flex-col chai-g-8">
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-12 chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-f-20 chai-text-e8e8e8 chai-text-uppercase">hello chai-wind</span><code
+              class="chai-text-555555 chai-f-14">text-uppercase</code></div>
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-12 chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-f-20 chai-text-e8e8e8 chai-text-lowercase">HELLO CHAI-WIND</span><code
+              class="chai-text-555555 chai-f-14">text-lowercase</code></div>
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-12 chai-dp-flex chai-justify-between chai-items-center"><span
+              class="chai-f-20 chai-text-e8e8e8 chai-text-capitalize">hello chai-wind</span><code
+              class="chai-text-555555 chai-f-14">text-capitalize</code></div>
+        </div>
+      </div>
+    </div>
+    <div class="chai-dp-grid chai-cols-2 chai-g-3">
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-op-{n} · opacity 0 →
+          1</p>
+        <div class="chai-dp-flex chai-g-12 chai-items-end">
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-6">
+            <div class="chai-bg-22c55e chai-rounded-6 chai-op-1    chai-w-40 chai-h-40"></div><code
+              class="chai-text-555555 chai-f-14">1.0</code>
+          </div>
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-6">
+            <div class="chai-bg-22c55e chai-rounded-6 chai-op-0.8  chai-w-40 chai-h-40"></div><code
+              class="chai-text-555555 chai-f-14">0.8</code>
+          </div>
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-6">
+            <div class="chai-bg-22c55e chai-rounded-6 chai-op-0.6  chai-w-40 chai-h-40"></div><code
+              class="chai-text-555555 chai-f-14">0.6</code>
+          </div>
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-6">
+            <div class="chai-bg-22c55e chai-rounded-6 chai-op-0.4  chai-w-40 chai-h-40"></div><code
+              class="chai-text-555555 chai-f-14">0.4</code>
+          </div>
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-6">
+            <div class="chai-bg-22c55e chai-rounded-6 chai-op-0.2  chai-w-40 chai-h-40"></div><code
+              class="chai-text-555555 chai-f-14">0.2</code>
+          </div>
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-6">
+            <div class="chai-bg-22c55e chai-rounded-6 chai-op-0.05 chai-w-40 chai-h-40"></div><code
+              class="chai-text-555555 chai-f-14">0.05</code>
+          </div>
+        </div>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-dp-{value} · display
+        </p>
+        <div class="chai-dp-flex chai-flex-col chai-g-6">
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-10 chai-dp-flex chai-justify-between"><code
+              class="chai-f-16 chai-text-22c55e">chai-dp-flex</code><span class="chai-text-555555 chai-f-15">display:
+              flex</span></div>
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-10 chai-dp-flex chai-justify-between"><code
+              class="chai-f-16 chai-text-38bdf8">chai-dp-grid</code><span class="chai-text-555555 chai-f-15">display:
+              grid</span></div>
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-10 chai-dp-flex chai-justify-between"><code
+              class="chai-f-16 chai-text-f59e0b">chai-dp-block</code><span class="chai-text-555555 chai-f-15">display:
+              block</span></div>
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-10 chai-dp-flex chai-justify-between"><code
+              class="chai-f-16 chai-text-a78bfa">chai-dp-inline-block</code><span
+              class="chai-text-555555 chai-f-15">inline-block</span></div>
+          <div class="chai-bg-161616 chai-rounded-6 chai-p-10 chai-dp-flex chai-justify-between"><code
+              class="chai-f-16 chai-text-fb7185">chai-dp-none</code><span class="chai-text-555555 chai-f-15">display:
+              none</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="chai-h-1 chai-bg-1e1e1e"></div>
+
+  <!-- ═══════ 03 — SPACING ═══════ -->
+  <section id="spacing" class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32 chai-pt-80 chai-pb-80">
+    <div class="chai-dp-flex chai-items-center chai-g-16 chai-mb-56">
+      <span class="chai-text-f59e0b chai-fw-700 chai-f-20 chai-text-uppercase tracking-xl">03</span>
+      <div class="chai-h-1 flex-1 chai-bg-1e1e1e"></div>
+      <span class="chai-text-888888 chai-f-40 chai-text-uppercase tracking">Spacing</span>
+    </div>
+    <div class="chai-dp-grid chai-cols-2 chai-g-3">
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-p / chai-pt /
+          chai-pr / chai-pb / chai-pl</p>
+        <div class="chai-dp-flex chai-flex-col chai-g-10">
+          <div class="chai-dp-flex chai-items-center chai-g-12">
+            <div class="chai-bg-22c55e chai-rounded-4 chai-w-8  chai-h-8"></div>
+            <div class="flex-1 chai-bg-161616 chai-p-8  chai-rounded-4"><code
+                class="chai-text-22c55e chai-f-15">chai-p-8</code></div>
+          </div>
+          <div class="chai-dp-flex chai-items-center chai-g-12">
+            <div class="chai-bg-22c55e chai-rounded-4 chai-w-16 chai-h-16"></div>
+            <div class="flex-1 chai-bg-161616 chai-p-16 chai-rounded-4"><code
+                class="chai-text-22c55e chai-f-15">chai-p-16</code></div>
+          </div>
+          <div class="chai-dp-flex chai-items-center chai-g-12">
+            <div class="chai-bg-22c55e chai-rounded-4 chai-w-24 chai-h-24"></div>
+            <div class="flex-1 chai-bg-161616 chai-p-24 chai-rounded-4"><code
+                class="chai-text-22c55e chai-f-15">chai-p-24</code></div>
+          </div>
+          <div class="chai-dp-flex chai-items-center chai-g-12">
+            <div class="chai-bg-38bdf8 chai-rounded-4 chai-w-20 chai-h-20"></div>
+            <div class="flex-1 chai-bg-161616 chai-pt-8 chai-pb-20 chai-pl-4 chai-pr-32 chai-rounded-4"><code
+                class="chai-text-38bdf8 chai-f-15">pt-8 pb-20 pl-4 pr-32</code></div>
+          </div>
+        </div>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-g-{n} · gap</p>
+        <div class="chai-dp-flex chai-flex-col chai-g-14">
+          <div>
+            <div class="chai-dp-flex chai-g-4 chai-mb-6">
+              <div
+                class="chai-bg-22c55e chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-8 chai-pr-8 chai-rounded-4">
+                A</div>
+              <div
+                class="chai-bg-22c55e chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-8 chai-pr-8 chai-rounded-4">
+                B</div>
+              <div
+                class="chai-bg-22c55e chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-8 chai-pr-8 chai-rounded-4">
+                C</div>
+            </div><code class="chai-text-555555 chai-f-14">chai-g-4</code>
+          </div>
+          <div>
+            <div class="chai-dp-flex chai-g-14 chai-mb-6">
+              <div
+                class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-8 chai-pr-8 chai-rounded-4">
+                A</div>
+              <div
+                class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-8 chai-pr-8 chai-rounded-4">
+                B</div>
+              <div
+                class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-8 chai-pr-8 chai-rounded-4">
+                C</div>
+            </div><code class="chai-text-555555 chai-f-14">chai-g-14</code>
+          </div>
+          <div>
+            <div class="chai-dp-flex chai-g-28 chai-mb-6">
+              <div
+                class="chai-bg-f59e0b chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-8 chai-pr-8 chai-rounded-4">
+                A</div>
+              <div
+                class="chai-bg-f59e0b chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-8 chai-pr-8 chai-rounded-4">
+                B</div>
+              <div
+                class="chai-bg-f59e0b chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-8 chai-pr-8 chai-rounded-4">
+                C</div>
+            </div><code class="chai-text-555555 chai-f-14">chai-g-28</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="chai-h-1 chai-bg-1e1e1e"></div>
+
+  <!-- ═══════ 04 — LAYOUT ═══════ -->
+  <section id="layout" class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32 chai-pt-80 chai-pb-80">
+    <div class="chai-dp-flex chai-items-center chai-g-16 chai-mb-56">
+      <span class="chai-text-f59e0b chai-fw-700 chai-f-20 chai-text-uppercase tracking-xl">04</span>
+      <div class="chai-h-1 flex-1 chai-bg-1e1e1e"></div>
+      <span class="chai-text-888888 chai-f-40 chai-text-uppercase tracking">Layout — Flex · Grid · Align</span>
+    </div>
+
+    <p class="chai-m-0 chai-text-666666 chai-f-14 chai-text-uppercase tracking-xl chai-mb-16">chai-flex-{direction}</p>
+    <div class="chai-dp-grid chai-cols-4 chai-g-3 chai-mb-40">
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-12">flex-row</p>
+        <div class="chai-dp-flex chai-flex-row chai-g-6 chai-bg-161616 chai-rounded-6 chai-p-10 chai-mb-10">
+          <div
+            class="chai-bg-22c55e chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4">
+            1</div>
+          <div
+            class="chai-bg-22c55e chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4 chai-op-0.6">
+            2</div>
+          <div
+            class="chai-bg-22c55e chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4 chai-op-0.3">
+            3</div>
+        </div><code class="chai-text-555555 chai-f-14">chai-dp-flex chai-flex-row</code>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-12">flex-col</p>
+        <div class="chai-dp-flex chai-flex-col chai-g-6 chai-bg-161616 chai-rounded-6 chai-p-10 chai-mb-10">
+          <div
+            class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4">
+            1</div>
+          <div
+            class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4 chai-op-0.6">
+            2</div>
+          <div
+            class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4 chai-op-0.3">
+            3</div>
+        </div><code class="chai-text-555555 chai-f-14">chai-dp-flex chai-flex-col</code>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-12">flex-row-rev</p>
+        <div class="chai-dp-flex chai-flex-row-rev chai-g-6 chai-bg-161616 chai-rounded-6 chai-p-10 chai-mb-10">
+          <div
+            class="chai-bg-f59e0b chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4">
+            1</div>
+          <div
+            class="chai-bg-f59e0b chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4 chai-op-0.6">
+            2</div>
+          <div
+            class="chai-bg-f59e0b chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4 chai-op-0.3">
+            3</div>
+        </div><code class="chai-text-555555 chai-f-14">chai-flex-row-rev</code>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-12">flex-col-rev</p>
+        <div class="chai-dp-flex chai-flex-col-rev chai-g-6 chai-bg-161616 chai-rounded-6 chai-p-10 chai-mb-10">
+          <div
+            class="chai-bg-a78bfa chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4">
+            1</div>
+          <div
+            class="chai-bg-a78bfa chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4 chai-op-0.6">
+            2</div>
+          <div
+            class="chai-bg-a78bfa chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-6 chai-pb-6 chai-pl-10 chai-pr-10 chai-rounded-4 chai-op-0.3">
+            3</div>
+        </div><code class="chai-text-555555 chai-f-14">chai-flex-col-rev</code>
+      </div>
+    </div>
+
+    <p class="chai-m-0 chai-text-666666 chai-f-14 chai-text-uppercase tracking-xl chai-mb-16">chai-justify-{value} — all
+      6</p>
+    <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24 chai-mb-40">
+      <div class="chai-dp-flex chai-flex-col chai-g-10">
+        <div>
+          <p class="chai-m-0 chai-text-555555 chai-f-14 chai-mb-8">justify-start</p>
+          <div class="chai-dp-flex chai-justify-start  chai-g-8 chai-bg-161616 chai-rounded-6 chai-p-10">
+            <div
+              class="chai-bg-22c55e chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4">
+              A</div>
+            <div
+              class="chai-bg-22c55e chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.6">
+              B</div>
+            <div
+              class="chai-bg-22c55e chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.35">
+              C</div>
+          </div>
+        </div>
+        <div>
+          <p class="chai-m-0 chai-text-555555 chai-f-14 chai-mb-8">justify-center</p>
+          <div class="chai-dp-flex chai-justify-center  chai-g-8 chai-bg-161616 chai-rounded-6 chai-p-10">
+            <div
+              class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4">
+              A</div>
+            <div
+              class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.6">
+              B</div>
+            <div
+              class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.35">
+              C</div>
+          </div>
+        </div>
+        <div>
+          <p class="chai-m-0 chai-text-555555 chai-f-14 chai-mb-8">justify-end</p>
+          <div class="chai-dp-flex chai-justify-end    chai-g-8 chai-bg-161616 chai-rounded-6 chai-p-10">
+            <div
+              class="chai-bg-f59e0b chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4">
+              A</div>
+            <div
+              class="chai-bg-f59e0b chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.6">
+              B</div>
+            <div
+              class="chai-bg-f59e0b chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.35">
+              C</div>
+          </div>
+        </div>
+        <div>
+          <p class="chai-m-0 chai-text-555555 chai-f-14 chai-mb-8">justify-between</p>
+          <div class="chai-dp-flex chai-justify-between chai-bg-161616 chai-rounded-6 chai-p-10">
+            <div
+              class="chai-bg-fb7185 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4">
+              A</div>
+            <div
+              class="chai-bg-fb7185 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.6">
+              B</div>
+            <div
+              class="chai-bg-fb7185 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.35">
+              C</div>
+          </div>
+        </div>
+        <div>
+          <p class="chai-m-0 chai-text-555555 chai-f-14 chai-mb-8">justify-around</p>
+          <div class="chai-dp-flex chai-justify-around  chai-bg-161616 chai-rounded-6 chai-p-10">
+            <div
+              class="chai-bg-a78bfa chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4">
+              A</div>
+            <div
+              class="chai-bg-a78bfa chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.6">
+              B</div>
+            <div
+              class="chai-bg-a78bfa chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.35">
+              C</div>
+          </div>
+        </div>
+        <div>
+          <p class="chai-m-0 chai-text-555555 chai-f-14 chai-mb-8">justify-evenly</p>
+          <div class="chai-dp-flex chai-justify-evenly  chai-bg-161616 chai-rounded-6 chai-p-10">
+            <div
+              class="chai-bg-14b8a6 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4">
+              A</div>
+            <div
+              class="chai-bg-14b8a6 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.6">
+              B</div>
+            <div
+              class="chai-bg-14b8a6 chai-text-0a0a0a chai-f-15 chai-fw-700 chai-pt-5 chai-pb-5 chai-pl-14 chai-pr-14 chai-rounded-4 chai-op-0.35">
+              C</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chai-dp-grid chai-cols-2 chai-g-3 chai-mb-40">
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-items-{value} ·
+          cross-axis</p>
+        <div class="chai-dp-flex chai-flex-col chai-g-10">
+          <div>
+            <p class="chai-m-0 chai-text-444444 chai-f-14 chai-mb-6">items-start</p>
+            <div class="chai-dp-flex chai-items-start   chai-g-6 chai-bg-161616 chai-rounded-6 chai-p-8 chai-h-56">
+              <div
+                class="chai-bg-22c55e chai-rounded-4 chai-h-20 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700">
+                A</div>
+              <div
+                class="chai-bg-22c55e chai-rounded-4 chai-h-40 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700 chai-op-0.6">
+                B</div>
+              <div
+                class="chai-bg-22c55e chai-rounded-4 chai-h-30 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700 chai-op-0.3">
+                C</div>
+            </div>
+          </div>
+          <div>
+            <p class="chai-m-0 chai-text-444444 chai-f-14 chai-mb-6">items-center</p>
+            <div class="chai-dp-flex chai-items-center  chai-g-6 chai-bg-161616 chai-rounded-6 chai-p-8 chai-h-56">
+              <div
+                class="chai-bg-38bdf8 chai-rounded-4 chai-h-20 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700">
+                A</div>
+              <div
+                class="chai-bg-38bdf8 chai-rounded-4 chai-h-40 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700 chai-op-0.6">
+                B</div>
+              <div
+                class="chai-bg-38bdf8 chai-rounded-4 chai-h-30 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700 chai-op-0.3">
+                C</div>
+            </div>
+          </div>
+          <div>
+            <p class="chai-m-0 chai-text-444444 chai-f-14 chai-mb-6">items-end</p>
+            <div class="chai-dp-flex chai-items-end     chai-g-6 chai-bg-161616 chai-rounded-6 chai-p-8 chai-h-56">
+              <div
+                class="chai-bg-f59e0b chai-rounded-4 chai-h-20 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700">
+                A</div>
+              <div
+                class="chai-bg-f59e0b chai-rounded-4 chai-h-40 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700 chai-op-0.6">
+                B</div>
+              <div
+                class="chai-bg-f59e0b chai-rounded-4 chai-h-30 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700 chai-op-0.3">
+                C</div>
+            </div>
+          </div>
+          <div>
+            <p class="chai-m-0 chai-text-444444 chai-f-14 chai-mb-6">items-stretch</p>
+            <div class="chai-dp-flex chai-items-stretch chai-g-6 chai-bg-161616 chai-rounded-6 chai-p-8 chai-h-56">
+              <div
+                class="chai-bg-a78bfa chai-rounded-4 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700">
+                A</div>
+              <div
+                class="chai-bg-a78bfa chai-rounded-4 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700 chai-op-0.6">
+                B</div>
+              <div
+                class="chai-bg-a78bfa chai-rounded-4 chai-w-24 chai-dp-flex chai-items-center chai-justify-center chai-text-0a0a0a chai-f-13 chai-fw-700 chai-op-0.3">
+                C</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-align-{value} ·
+          align-content multi-row</p>
+        <div class="chai-dp-flex chai-flex-col chai-g-10">
+          <div>
+            <p class="chai-m-0 chai-text-444444 chai-f-14 chai-mb-6">align-start</p>
+            <div
+              class="chai-dp-flex chai-align-start   flex-wrap chai-g-4 chai-bg-161616 chai-rounded-6 chai-p-8 chai-h-80">
+              <div
+                class="chai-bg-22c55e chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4">
+                A</div>
+              <div
+                class="chai-bg-22c55e chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.7">
+                B</div>
+              <div
+                class="chai-bg-22c55e chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.5">
+                C</div>
+              <div
+                class="chai-bg-22c55e chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.35">
+                D</div>
+              <div
+                class="chai-bg-22c55e chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.2">
+                E</div>
+              <div
+                class="chai-bg-22c55e chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.1">
+                F</div>
+            </div>
+          </div>
+          <div>
+            <p class="chai-m-0 chai-text-444444 chai-f-14 chai-mb-6">align-center</p>
+            <div
+              class="chai-dp-flex chai-align-center  flex-wrap chai-g-4 chai-bg-161616 chai-rounded-6 chai-p-8 chai-h-80">
+              <div
+                class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4">
+                A</div>
+              <div
+                class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.7">
+                B</div>
+              <div
+                class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.5">
+                C</div>
+              <div
+                class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.35">
+                D</div>
+              <div
+                class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.2">
+                E</div>
+              <div
+                class="chai-bg-38bdf8 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.1">
+                F</div>
+            </div>
+          </div>
+          <div>
+            <p class="chai-m-0 chai-text-444444 chai-f-14 chai-mb-6">align-end</p>
+            <div
+              class="chai-dp-flex chai-align-end     flex-wrap chai-g-4 chai-bg-161616 chai-rounded-6 chai-p-8 chai-h-80">
+              <div
+                class="chai-bg-f59e0b chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4">
+                A</div>
+              <div
+                class="chai-bg-f59e0b chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.7">
+                B</div>
+              <div
+                class="chai-bg-f59e0b chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.5">
+                C</div>
+              <div
+                class="chai-bg-f59e0b chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.35">
+                D</div>
+              <div
+                class="chai-bg-f59e0b chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.2">
+                E</div>
+              <div
+                class="chai-bg-f59e0b chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.1">
+                F</div>
+            </div>
+          </div>
+          <div>
+            <p class="chai-m-0 chai-text-444444 chai-f-14 chai-mb-6">align-between</p>
+            <div
+              class="chai-dp-flex chai-align-between flex-wrap chai-g-4 chai-bg-161616 chai-rounded-6 chai-p-8 chai-h-80">
+              <div
+                class="chai-bg-fb7185 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4">
+                A</div>
+              <div
+                class="chai-bg-fb7185 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.7">
+                B</div>
+              <div
+                class="chai-bg-fb7185 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.5">
+                C</div>
+              <div
+                class="chai-bg-fb7185 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.35">
+                D</div>
+              <div
+                class="chai-bg-fb7185 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.2">
+                E</div>
+              <div
+                class="chai-bg-fb7185 chai-text-0a0a0a chai-f-13 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-op-0.1">
+                F</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="chai-m-0 chai-text-666666 chai-f-14 chai-text-uppercase tracking-xl chai-mb-16">chai-cols-{n}</p>
+    <div class="chai-dp-grid chai-cols-3 chai-g-3">
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-12">chai-cols-2</p>
+        <div class="chai-dp-grid chai-cols-2 chai-g-6 chai-mb-10">
+          <div class="chai-bg-22c55e chai-text-0a0a0a chai-fw-700 chai-f-15 chai-p-10 chai-rounded-4 chai-text-center">1
+          </div>
+          <div
+            class="chai-bg-22c55e chai-text-0a0a0a chai-fw-700 chai-f-15 chai-p-10 chai-rounded-4 chai-text-center chai-op-0.5">
+            2</div>
+          <div
+            class="chai-bg-22c55e chai-text-0a0a0a chai-fw-700 chai-f-15 chai-p-10 chai-rounded-4 chai-text-center chai-op-0.3">
+            3</div>
+          <div
+            class="chai-bg-22c55e chai-text-0a0a0a chai-fw-700 chai-f-15 chai-p-10 chai-rounded-4 chai-text-center chai-op-0.15">
+            4</div>
+        </div><code class="chai-text-555555 chai-f-14">chai-dp-grid chai-cols-2</code>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-12">chai-cols-3</p>
+        <div class="chai-dp-grid chai-cols-3 chai-g-6 chai-mb-10">
+          <div class="chai-bg-38bdf8 chai-text-0a0a0a chai-fw-700 chai-f-15 chai-p-10 chai-rounded-4 chai-text-center">1
+          </div>
+          <div
+            class="chai-bg-38bdf8 chai-text-0a0a0a chai-fw-700 chai-f-15 chai-p-10 chai-rounded-4 chai-text-center chai-op-0.65">
+            2</div>
+          <div
+            class="chai-bg-38bdf8 chai-text-0a0a0a chai-fw-700 chai-f-15 chai-p-10 chai-rounded-4 chai-text-center chai-op-0.35">
+            3</div>
+          <div
+            class="chai-bg-38bdf8 chai-text-0a0a0a chai-fw-700 chai-f-15 chai-p-10 chai-rounded-4 chai-text-center chai-op-0.2">
+            4</div>
+          <div
+            class="chai-bg-38bdf8 chai-text-0a0a0a chai-fw-700 chai-f-15 chai-p-10 chai-rounded-4 chai-text-center chai-op-0.1">
+            5</div>
+          <div
+            class="chai-bg-38bdf8 chai-text-0a0a0a chai-fw-700 chai-f-15 chai-p-10 chai-rounded-4 chai-text-center chai-op-0.05">
+            6</div>
+        </div><code class="chai-text-555555 chai-f-14">chai-dp-grid chai-cols-3</code>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-12">chai-cols-4</p>
+        <div class="chai-dp-grid chai-cols-4 chai-g-6 chai-mb-10">
+          <div class="chai-bg-f59e0b chai-text-0a0a0a chai-fw-700 chai-f-14 chai-p-8 chai-rounded-4 chai-text-center">1
+          </div>
+          <div
+            class="chai-bg-f59e0b chai-text-0a0a0a chai-fw-700 chai-f-14 chai-p-8 chai-rounded-4 chai-text-center chai-op-0.7">
+            2</div>
+          <div
+            class="chai-bg-f59e0b chai-text-0a0a0a chai-fw-700 chai-f-14 chai-p-8 chai-rounded-4 chai-text-center chai-op-0.45">
+            3</div>
+          <div
+            class="chai-bg-f59e0b chai-text-0a0a0a chai-fw-700 chai-f-14 chai-p-8 chai-rounded-4 chai-text-center chai-op-0.2">
+            4</div>
+        </div><code class="chai-text-555555 chai-f-14">chai-dp-grid chai-cols-4</code>
+      </div>
+    </div>
+  </section>
+
+  <div class="chai-h-1 chai-bg-1e1e1e"></div>
+
+  <!-- ═══════ 05 — EFFECTS ═══════ -->
+  <section id="effects" class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32 chai-pt-80 chai-pb-80">
+    <div class="chai-dp-flex chai-items-center chai-g-16 chai-mb-56">
+      <span class="chai-text-f59e0b chai-fw-700 chai-f-20 chai-text-uppercase tracking-xl">05</span>
+      <div class="chai-h-1 flex-1 chai-bg-1e1e1e"></div>
+      <span class="chai-text-888888 chai-f-40 chai-text-uppercase tracking">Borders · Transforms · Transitions</span>
+    </div>
+
+    <p class="chai-m-0 chai-text-666666 chai-f-14 chai-text-uppercase tracking-xl chai-mb-16">Borders · Border radius
+    </p>
+    <div class="chai-dp-grid chai-cols-3 chai-g-3 chai-mb-40">
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-dp-flex chai-items-center chai-justify-center" style="flex:1">
+          <div
+            class="chai-border-1-22c55e chai-rounded-6 chai-pt-12 chai-pb-12 chai-pl-16 chai-pr-16 chai-text-22c55e chai-f-16">
+            1px solid</div>
+        </div><code class="chai-text-555555 chai-f-14">chai-border-1-22c55e</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-dp-flex chai-items-center chai-justify-center" style="flex:1">
+          <div
+            class="chai-border-2-38bdf8 chai-rounded-6 chai-pt-12 chai-pb-12 chai-pl-16 chai-pr-16 chai-text-38bdf8 chai-f-16">
+            2px solid</div>
+        </div><code class="chai-text-555555 chai-f-14">chai-border-2-38bdf8</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between">
+        <div class="chai-dp-flex chai-items-center chai-justify-center" style="flex:1">
+          <div
+            class="chai-border-2-fb7185-dashed chai-rounded-6 chai-pt-12 chai-pb-12 chai-pl-16 chai-pr-16 chai-text-fb7185 chai-f-16">
+            2px dashed</div>
+        </div><code class="chai-text-555555 chai-f-14">chai-border-2-fb7185-dashed</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center">
+        <div
+          class="chai-bg-161616 chai-border-1-333333 chai-rounded-0  chai-pt-14 chai-pb-14 chai-pl-14 chai-pr-14 chai-text-555555 chai-f-15 chai-mb-8">
+          0px</div><code class="chai-text-555555 chai-f-14">rounded-0</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center">
+        <div
+          class="chai-bg-161616 chai-border-1-333333 chai-rounded-8  chai-pt-14 chai-pb-14 chai-pl-14 chai-pr-14 chai-text-555555 chai-f-15 chai-mb-8">
+          8px</div><code class="chai-text-555555 chai-f-14">rounded-8</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-96 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center">
+        <div
+          class="chai-bg-22c55e chai-text-0a0a0a chai-rounded-999 chai-pt-12 chai-pb-12 chai-pl-24 chai-pr-24 chai-fw-700 chai-f-15 chai-mb-8">
+          pill</div><code class="chai-text-555555 chai-f-14">rounded-999</code>
+      </div>
+    </div>
+
+    <!-- TRANSFORMS — hover applies transform, chai-transition-* animates it -->
+    <p class="chai-m-0 chai-text-666666 chai-f-14 chai-text-uppercase tracking-xl chai-mb-8">chai-scale · chai-rotate —
+      hover to fire, chai-transition animates</p>
+    <p class="chai-m-0 chai-text-444444 chai-f-14 chai-mb-16">Each box carries <code
+        class="chai-text-f59e0b">chai-scale-* / chai-rotate-*</code> (starting transform) + <code
+        class="chai-text-f59e0b">chai-transition-all-0.35-ease</code> (animate) — hover fires via CSS</p>
+    <div class="chai-dp-grid chai-cols-4 chai-g-3 chai-mb-40">
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-132 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center h-card">
+        <div class="chai-bg-22c55e chai-rounded-8 chai-w-48 chai-h-48 h-scale chai-transition-all-0.35-ease"></div><code
+          class="chai-text-555555 chai-f-14">scale-1</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-132 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center h-card">
+        <div
+          class="chai-bg-38bdf8 chai-rounded-8 chai-w-48 chai-h-48 chai-scale-0.6 h-scale chai-transition-all-0.35-ease">
+        </div><code class="chai-text-555555 chai-f-14">scale-0.6</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-132 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center h-card">
+        <div
+          class="chai-bg-f59e0b chai-rounded-8 chai-w-48 chai-h-48 chai-scale-1.3 h-scale chai-transition-all-0.35-ease">
+        </div><code class="chai-text-555555 chai-f-14">scale-1.3</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-132 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center h-card">
+        <div
+          class="chai-bg-fb7185 chai-rounded-8 chai-w-48 chai-h-48 chai-rotate-45deg h-scale chai-transition-all-0.35-ease">
+        </div><code class="chai-text-555555 chai-f-14">rotate-45deg</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-132 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center h-card">
+        <div
+          class="chai-bg-a78bfa chai-rounded-8 chai-w-48 chai-h-48 chai-rotate-180deg h-scale chai-transition-all-0.35-ease">
+        </div><code class="chai-text-555555 chai-f-14">rotate-180deg</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-132 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center h-card">
+        <div
+          class="chai-bg-14b8a6 chai-rounded-8 chai-w-48 chai-h-48 chai-scale-0.4 h-scale chai-transition-all-0.35-ease">
+        </div><code class="chai-text-555555 chai-f-14">scale-0.4</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-132 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center h-card">
+        <div class="chai-bg-f97316 chai-rounded-8 chai-w-48 chai-h-48 h-scale chai-transition-all-0.35-ease"
+          style="transform:rotate(-30deg)"></div><code class="chai-text-555555 chai-f-14">rotate(-30deg)</code>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-hmin-132 chai-p-20 chai-dp-flex chai-flex-col chai-justify-between chai-items-center">
+        <div class="chai-bg-ec4899 chai-rounded-8 chai-w-48 chai-h-48 spin"></div><code
+          class="chai-text-555555 chai-f-14">spin · @keyframe</code>
+      </div>
+    </div>
+
+    <!-- tX + tY WITH transition + hover — all 3 working together -->
+    <p class="chai-m-0 chai-text-666666 chai-f-14 chai-text-uppercase tracking-xl chai-mb-8">chai-tX / chai-tY +
+      chai-transition + hover — all 3 at once</p>
+    <p class="chai-m-0 chai-text-444444 chai-f-14 chai-mb-16">Box has starting offset via chai + duration via chai +
+      hover pushes it further via CSS <code class="chai-text-f59e0b">!important</code></p>
+    <div class="chai-dp-grid chai-cols-2 chai-g-3 chai-mb-40">
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-tX-{n} — hover
+          pushes →</p>
+        <div class="chai-dp-flex chai-flex-col chai-g-12 chai-bg-161616 chai-rounded-8 chai-p-16">
+          <div class="chai-dp-flex chai-items-center chai-g-16"><code
+              class="chai-text-555555 chai-f-14 chai-wmin-48">tX-0</code>
+            <div
+              class="chai-bg-22c55e chai-rounded-6 chai-w-36 chai-h-36 chai-tX-0   h-tx chai-transition-all-0.4-ease">
+            </div>
+          </div>
+          <div class="chai-dp-flex chai-items-center chai-g-16"><code
+              class="chai-text-555555 chai-f-14 chai-wmin-48">tX-16</code>
+            <div
+              class="chai-bg-38bdf8 chai-rounded-6 chai-w-36 chai-h-36 chai-tX-16  h-tx chai-transition-all-0.4-ease">
+            </div>
+          </div>
+          <div class="chai-dp-flex chai-items-center chai-g-16"><code
+              class="chai-text-555555 chai-f-14 chai-wmin-48">tX-40</code>
+            <div
+              class="chai-bg-f59e0b chai-rounded-6 chai-w-36 chai-h-36 chai-tX-40  h-tx chai-transition-all-0.4-ease">
+            </div>
+          </div>
+          <div class="chai-dp-flex chai-items-center chai-g-16"><code
+              class="chai-text-555555 chai-f-14 chai-wmin-48">tX-80</code>
+            <div
+              class="chai-bg-fb7185 chai-rounded-6 chai-w-36 chai-h-36 chai-tX-80  h-tx chai-transition-all-0.4-ease">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-16">chai-tY-{n} — hover jumps
+          ↑</p>
+        <div
+          class="chai-dp-flex chai-g-20 chai-items-end chai-bg-161616 chai-rounded-8 chai-p-16 chai-h-160 chai-pb-24">
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-8">
+            <div
+              class="chai-bg-22c55e chai-rounded-6 chai-w-36 chai-h-36 chai-tY-0   h-ty chai-transition-all-0.4-ease">
+            </div><code class="chai-text-555555 chai-f-14">tY-0</code>
+          </div>
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-10">
+            <div
+              class="chai-bg-38bdf8 chai-rounded-6 chai-w-36 chai-h-36 chai-tY-16  h-ty chai-transition-all-0.4-ease">
+            </div><code class="chai-text-38bdf8 chai-f-14">tY-16</code>
+          </div>
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-26">
+            <div
+              class="chai-bg-f59e0b chai-rounded-6 chai-w-36 chai-h-36 chai-tY-32  h-ty chai-transition-all-0.4-ease">
+            </div><code class="chai-text-f59e0b chai-f-14">tY-32</code>
+          </div>
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-2">
+            <div
+              class="chai-bg-fb7185 chai-rounded-6 chai-w-36 chai-h-36 chai-tY-56  h-ty chai-transition-all-0.4-ease">
+            </div><code class="chai-text-fb7185 chai-f-14">tY-56</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="chai-m-0 chai-text-666666 chai-f-14 chai-text-uppercase tracking-xl chai-mb-16">
+      chai-transition-{prop}-{dur}-{timing} — hover to compare speeds</p>
+    <div class="chai-dp-grid chai-cols-3 chai-g-3">
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20 chai-dp-flex chai-flex-col chai-g-10 h-card chai-cur-ptr chai-transition-all-0.4-ease">
+        <div class="chai-bg-22c55e chai-rounded-6 chai-w-40 chai-h-40"></div><code
+          class="chai-text-22c55e chai-f-15">transition-all-0.4-ease</code><span
+          class="chai-text-555555 chai-f-15">standard · smooth</span>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20 chai-dp-flex chai-flex-col chai-g-10 h-card chai-cur-ptr chai-transition-all-0.8-ease-in-out">
+        <div class="chai-bg-38bdf8 chai-rounded-6 chai-w-40 chai-h-40"></div><code
+          class="chai-text-38bdf8 chai-f-15">transition-all-0.8-ease-in-out</code><span
+          class="chai-text-555555 chai-f-15">slow · buttery</span>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20 chai-dp-flex chai-flex-col chai-g-10 h-card chai-cur-ptr chai-transition-all-0.08-ease">
+        <div class="chai-bg-f59e0b chai-rounded-6 chai-w-40 chai-h-40"></div><code
+          class="chai-text-f59e0b chai-f-15">transition-all-0.08-ease</code><span
+          class="chai-text-555555 chai-f-15">instant · snap</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="chai-h-1 chai-bg-1e1e1e"></div>
+
+  <!-- ═══════ 06 — POSITION ═══════ -->
+  <section id="position" class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32 chai-pt-80 chai-pb-80">
+    <div class="chai-dp-flex chai-items-center chai-g-16 chai-mb-56">
+      <span class="chai-text-f59e0b chai-fw-700 chai-f-20 chai-text-uppercase tracking-xl">06</span>
+      <div class="chai-h-1 flex-1 chai-bg-1e1e1e"></div>
+      <span class="chai-text-888888 chai-f-40 chai-text-uppercase tracking">Position · Z-index · Overflow ·
+        Cursor</span>
+    </div>
+    <div class="chai-dp-grid chai-cols-3 chai-g-3 chai-mb-3">
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-12">chai-fix-abs + t / r / b
+          / l</p>
+        <div class="chai-bg-161616 chai-rounded-6 chai-fix-rel chai-h-120">
+          <div
+            class="chai-bg-22c55e chai-text-0a0a0a chai-fw-700 chai-f-14 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-fix-abs chai-t-8 chai-l-8">
+            t-8 l-8</div>
+          <div
+            class="chai-bg-38bdf8 chai-text-0a0a0a chai-fw-700 chai-f-14 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-fix-abs chai-t-8 chai-r-8">
+            t-8 r-8</div>
+          <div
+            class="chai-bg-f59e0b chai-text-0a0a0a chai-fw-700 chai-f-14 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-fix-abs chai-b-8 chai-l-8">
+            b-8 l-8</div>
+          <div
+            class="chai-bg-fb7185 chai-text-0a0a0a chai-fw-700 chai-f-14 chai-pt-4 chai-pb-4 chai-pl-8 chai-pr-8 chai-rounded-4 chai-fix-abs chai-b-8 chai-r-8">
+            b-8 r-8</div>
+        </div>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-12">chai-z-{n}</p>
+        <div class="chai-bg-161616 chai-rounded-6 chai-fix-rel chai-h-120">
+          <div
+            class="chai-bg-38bdf8 chai-rounded-8 chai-fix-abs chai-t-14 chai-l-14 chai-z-1 chai-dp-flex chai-items-center chai-justify-center chai-fw-700 chai-f-16 chai-w-60 chai-h-60">
+            z-1</div>
+          <div
+            class="chai-bg-22c55e chai-text-0a0a0a chai-rounded-8 chai-fix-abs chai-t-30 chai-l-38 chai-z-2 chai-dp-flex chai-items-center chai-justify-center chai-fw-700 chai-f-16 chai-w-60 chai-h-60">
+            z-2</div>
+          <div
+            class="chai-bg-f59e0b chai-text-0a0a0a chai-rounded-8 chai-fix-abs chai-t-20 chai-l-76 chai-z-3 chai-dp-flex chai-items-center chai-justify-center chai-fw-700 chai-f-16 chai-w-60 chai-h-60">
+            z-3</div>
+        </div>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20">
+        <p class="chai-m-0 chai-text-555555 chai-f-14 chai-text-uppercase tracking chai-mb-12">chai-ovr-{value}</p>
+        <div class="chai-dp-flex chai-flex-col chai-g-12">
+          <div><code class="chai-text-22c55e chai-f-15 chai-mb-6">chai-ovr-hidden</code>
+            <div class="chai-bg-161616 chai-rounded-4 chai-ovr-hidden chai-h-28">
+              <div class="chai-bg-fb7185 chai-rounded-4 chai-h-20 chai-mt-4 chai-w-280"></div>
+            </div>
+          </div>
+          <div><code class="chai-text-38bdf8 chai-f-15 chai-mb-6">chai-ovr-x-auto</code>
+            <div class="chai-bg-161616 chai-rounded-4 chai-ovr-x-auto chai-h-28">
+              <div class="chai-dp-flex chai-g-6 chai-pt-6 chai-w-360 shrink-0">
+                <div class="chai-bg-38bdf8 chai-rounded-4 chai-w-60 chai-h-14 shrink-0"></div>
+                <div class="chai-bg-38bdf8 chai-rounded-4 chai-w-60 chai-h-14 chai-op-0.6 shrink-0"></div>
+                <div class="chai-bg-38bdf8 chai-rounded-4 chai-w-60 chai-h-14 chai-op-0.3 shrink-0"></div>
+                <div class="chai-bg-38bdf8 chai-rounded-4 chai-w-60 chai-h-14 chai-op-0.15 shrink-0"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="chai-m-0 chai-text-666666 chai-f-14 chai-text-uppercase tracking-xl chai-mb-16 chai-mt-40">
+      chai-cur-{value} — hover each</p>
+    <div class="chai-dp-grid chai-cols-4 chai-g-3">
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-p-16 chai-dp-flex chai-flex-col chai-items-center chai-g-8 chai-cur-ptr">
+        <span class="chai-f-28">👆</span><code class="chai-text-22c55e chai-f-14">cur-ptr</code></div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-p-16 chai-dp-flex chai-flex-col chai-items-center chai-g-8 chai-cur-NA">
+        <span class="chai-f-28">🚫</span><code class="chai-text-fb7185 chai-f-14">cur-NA</code></div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-p-16 chai-dp-flex chai-flex-col chai-items-center chai-g-8 chai-cur-text">
+        <span class="chai-f-28">✍️</span><code class="chai-text-38bdf8 chai-f-14">cur-text</code></div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-p-16 chai-dp-flex chai-flex-col chai-items-center chai-g-8 chai-cur-move">
+        <span class="chai-f-28">✥</span><code class="chai-text-f59e0b chai-f-14">cur-move</code></div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-p-16 chai-dp-flex chai-flex-col chai-items-center chai-g-8 chai-cur-grab">
+        <span class="chai-f-28">✊</span><code class="chai-text-a78bfa chai-f-14">cur-grab</code></div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-p-16 chai-dp-flex chai-flex-col chai-items-center chai-g-8 chai-cur-crosshair">
+        <span class="chai-f-28">⊕</span><code class="chai-text-14b8a6 chai-f-14">cur-crosshair</code></div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-p-16 chai-dp-flex chai-flex-col chai-items-center chai-g-8 chai-cur-help">
+        <span class="chai-f-28">❓</span><code class="chai-text-f97316 chai-f-14">cur-help</code></div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-6 chai-p-16 chai-dp-flex chai-flex-col chai-items-center chai-g-8 chai-cur-wait">
+        <span class="chai-f-28">⏳</span><code class="chai-text-ec4899 chai-f-14">cur-wait</code></div>
+    </div>
+  </section>
+
+  <div class="chai-h-1 chai-bg-1e1e1e"></div>
+
+  <!-- ═══════ 07 — COMPONENTS ═══════ -->
+  <section id="components" class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32 chai-pt-80 chai-pb-80">
+    <div class="chai-dp-flex chai-items-center chai-g-16 chai-mb-56">
+      <span class="chai-text-f59e0b chai-fw-700 chai-f-20 chai-text-uppercase tracking-xl">07</span>
+      <div class="chai-h-1 flex-1 chai-bg-1e1e1e"></div>
+      <span class="chai-text-888888 chai-f-40 chai-text-uppercase tracking">Real-world Components</span>
+    </div>
+    <div class="chai-dp-grid chai-cols-3 chai-g-3">
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24 chai-dp-flex chai-flex-col chai-items-center chai-g-16 h-card chai-cur-ptr">
+        <div
+          class="chai-bg-161616 chai-border-2-22c55e chai-rounded-999 chai-dp-flex chai-items-center chai-justify-center chai-w-64 chai-h-64 chai-f-34">
+          🧑‍💻</div>
+        <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-4"><span
+            class="chai-fw-700 chai-f-24 chai-text-e8e8e8">Dev User</span><span
+            class="chai-f-15 chai-text-555555">@devuser · chai-wind fan</span></div>
+        <div class="chai-dp-flex chai-g-24 chai-pt-12 chai-justify-center"
+          style="border-top:1px solid #1e1e1e;width:100%">
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-4"><span
+              class="chai-fw-700 chai-f-28 chai-text-22c55e">128</span><span
+              class="chai-f-14 chai-text-555555 chai-text-uppercase tracking">repos</span></div>
+          <div class="chai-dp-flex chai-flex-col chai-items-center chai-g-4"><span
+              class="chai-fw-700 chai-f-28 chai-text-22c55e">2.4k</span><span
+              class="chai-f-14 chai-text-555555 chai-text-uppercase tracking">stars</span></div>
+        </div>
+        <button
+          class="chai-bg-22c55e chai-text-0a0a0a chai-fw-700 chai-f-16 chai-pt-8 chai-pb-8 chai-pl-20 chai-pr-20 chai-rounded-6 chai-cur-ptr h-bright chai-transition-all-0.18-ease"
+          style="width:100%">Follow</button>
+      </div>
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <p class="chai-m-0 chai-text-444444 chai-f-14 chai-text-uppercase tracking chai-mb-16">Activity Feed</p>
+        <div class="chai-dp-flex chai-flex-col chai-g-3">
+          <div
+            class="chai-bg-161616 chai-rounded-6 chai-p-12 chai-dp-flex chai-g-10 chai-items-center h-bg chai-transition-all-0.18-ease">
+            <div
+              class="chai-bg-22c55e chai-text-0a0a0a chai-fw-700 chai-f-15 chai-rounded-6 chai-dp-flex chai-items-center chai-justify-center chai-w-30 chai-h-30 shrink-0">
+              ✓</div>
+            <div>
+              <p class="chai-m-0 chai-text-e8e8e8 chai-f-16 chai-fw-500">PR merged to main</p>
+              <p class="chai-m-0 chai-text-555555 chai-f-14">border-radius · 2m ago</p>
+            </div>
+          </div>
+          <div
+            class="chai-bg-161616 chai-rounded-6 chai-p-12 chai-dp-flex chai-g-10 chai-items-center h-bg chai-transition-all-0.18-ease">
+            <div
+              class="chai-bg-38bdf8 chai-text-0a0a0a chai-fw-700 chai-f-15 chai-rounded-6 chai-dp-flex chai-items-center chai-justify-center chai-w-30 chai-h-30 shrink-0">
+              ★</div>
+            <div>
+              <p class="chai-m-0 chai-text-e8e8e8 chai-f-16 chai-fw-500">249 downloads</p>
+              <p class="chai-m-0 chai-text-555555 chai-f-14">npm install chai-wind · 14m</p>
+            </div>
+          </div>
+          <div
+            class="chai-bg-161616 chai-rounded-6 chai-p-12 chai-dp-flex chai-g-10 chai-items-center h-bg chai-transition-all-0.18-ease">
+            <div
+              class="chai-bg-f59e0b chai-text-0a0a0a chai-fw-700 chai-f-15 chai-rounded-6 chai-dp-flex chai-items-center chai-justify-center chai-w-30 chai-h-30 shrink-0">
+              !</div>
+            <div>
+              <p class="chai-m-0 chai-text-e8e8e8 chai-f-16 chai-fw-500">Issue #47 opened</p>
+              <p class="chai-m-0 chai-text-555555 chai-f-14">Add align-self utility · 1h</p>
+            </div>
+          </div>
+          <div
+            class="chai-bg-161616 chai-rounded-6 chai-p-12 chai-dp-flex chai-g-10 chai-items-center h-bg chai-transition-all-0.18-ease">
+            <div
+              class="chai-bg-a78bfa chai-text-0a0a0a chai-fw-700 chai-f-15 chai-rounded-6 chai-dp-flex chai-items-center chai-justify-center chai-w-30 chai-h-30 shrink-0">
+              ↗</div>
+            <div>
+              <p class="chai-m-0 chai-text-e8e8e8 chai-f-16 chai-fw-500">Release v0.2.0</p>
+              <p class="chai-m-0 chai-text-555555 chai-f-14">Typed CSSOM · 3h ago</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chai-dp-flex chai-flex-col chai-g-3">
+        <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+          <p class="chai-m-0 chai-text-444444 chai-f-14 chai-text-uppercase tracking chai-mb-16">Metrics</p>
+          <div class="chai-dp-flex chai-flex-col chai-g-12">
+            <div>
+              <div class="chai-dp-flex chai-justify-between chai-mb-6"><span
+                  class="chai-text-888888 chai-f-15">Bundle</span><span
+                  class="chai-text-22c55e chai-fw-700 chai-f-15">~3kb</span></div>
+              <div class="chai-bg-1e1e1e chai-rounded-2 chai-h-4 chai-ovr-hidden">
+                <div class="chai-bg-22c55e chai-rounded-2 chai-h-4" style="width:12%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="chai-dp-flex chai-justify-between chai-mb-6"><span
+                  class="chai-text-888888 chai-f-15">Utilities</span><span
+                  class="chai-text-38bdf8 chai-fw-700 chai-f-15">78%</span></div>
+              <div class="chai-bg-1e1e1e chai-rounded-2 chai-h-4 chai-ovr-hidden">
+                <div class="chai-bg-38bdf8 chai-rounded-2 chai-h-4" style="width:78%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="chai-dp-flex chai-justify-between chai-mb-6"><span
+                  class="chai-text-888888 chai-f-15">TypedOM</span><span
+                  class="chai-text-f59e0b chai-fw-700 chai-f-15">92%</span></div>
+              <div class="chai-bg-1e1e1e chai-rounded-2 chai-h-4 chai-ovr-hidden">
+                <div class="chai-bg-f59e0b chai-rounded-2 chai-h-4" style="width:92%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+          <p class="chai-m-0 chai-text-444444 chai-f-14 chai-text-uppercase tracking chai-mb-14">Buttons &amp; Badges
+          </p>
+          <div class="chai-dp-flex chai-flex-col chai-g-8">
+            <div class="chai-dp-flex chai-g-6">
+              <button
+                class="chai-bg-22c55e chai-text-0a0a0a chai-fw-700 chai-f-15 chai-pt-7 chai-pb-7 chai-pl-14 chai-pr-14 chai-rounded-6 chai-cur-ptr h-bright chai-transition-all-0.18-ease">Primary</button>
+              <button
+                class="chai-bg-38bdf8 chai-text-0a0a0a chai-fw-700 chai-f-15 chai-pt-7 chai-pb-7 chai-pl-14 chai-pr-14 chai-rounded-6 chai-cur-ptr h-bright chai-transition-all-0.18-ease">Info</button>
+              <button
+                class="chai-bg-fb7185 chai-text-0a0a0a chai-fw-700 chai-f-15 chai-pt-7 chai-pb-7 chai-pl-14 chai-pr-14 chai-rounded-6 chai-cur-ptr h-bright chai-transition-all-0.18-ease">Danger</button>
+            </div>
+            <div class="chai-dp-flex chai-g-6">
+              <button
+                class="chai-bg-161616 chai-border-1-22c55e chai-text-22c55e chai-fw-600 chai-f-15 chai-pt-7 chai-pb-7 chai-pl-14 chai-pr-14 chai-rounded-6 chai-cur-ptr h-bg chai-transition-all-0.18-ease">Outline</button>
+              <button
+                class="chai-bg-161616 chai-border-1-333333 chai-text-444444 chai-fw-600 chai-f-15 chai-pt-7 chai-pb-7 chai-pl-14 chai-pr-14 chai-rounded-6 chai-cur-NA">Disabled</button>
+            </div>
+            <div class="chai-dp-flex chai-g-6 flex-wrap">
+              <span
+                class="chai-bg-22c55e chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-3 chai-pb-3 chai-pl-9 chai-pr-9 chai-rounded-999 chai-text-uppercase tracking">active</span>
+              <span
+                class="chai-bg-fb7185 chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-3 chai-pb-3 chai-pl-9 chai-pr-9 chai-rounded-999 chai-text-uppercase tracking">error</span>
+              <span
+                class="chai-bg-161616 chai-border-1-22c55e chai-text-22c55e chai-f-14 chai-fw-600 chai-pt-3 chai-pb-3 chai-pl-9 chai-pr-9 chai-rounded-999">ESM</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="chai-h-1 chai-bg-1e1e1e"></div>
+
+  <!-- ═══════ 08 — CHEAT SHEET ═══════ -->
+  <section id="cheatsheet" class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32 chai-pt-80 chai-pb-80">
+    <div class="chai-dp-flex chai-items-center chai-g-16 chai-mb-56">
+      <span class="chai-text-f59e0b chai-fw-700 chai-f-20 chai-text-uppercase tracking-xl">08</span>
+      <div class="chai-h-1 flex-1 chai-bg-1e1e1e"></div>
+      <span class="chai-text-888888 chai-f-40 chai-text-uppercase tracking">Cheat Sheet — every class</span>
+    </div>
+    <div class="chai-dp-grid chai-cols-2 chai-g-3">
+
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <div class="chai-dp-flex chai-items-center chai-g-8 chai-mb-16">
+          <div class="chai-bg-22c55e chai-rounded-2 chai-w-3 chai-h-16"></div><span
+            class="chai-fw-700 chai-f-18 chai-text-e8e8e8">Layout · Display</span>
+        </div>
+        <div class="chai-dp-flex chai-flex-col chai-g-5">
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-22c55e">chai-dp-{flex|grid|block|inline|inline-block|none}</code></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-22c55e">chai-w-{n} · chai-h-{n}</code><span
+              class="chai-text-444444 chai-f-14">width / height px</span></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-22c55e">chai-wmin · chai-wmax · chai-hmin · chai-hmax</code></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-22c55e">chai-cols-{n} · chai-rows-{n}</code><span
+              class="chai-text-444444 chai-f-14">grid template</span></div>
+        </div>
+      </div>
+
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <div class="chai-dp-flex chai-items-center chai-g-8 chai-mb-16">
+          <div class="chai-bg-38bdf8 chai-rounded-2 chai-w-3 chai-h-16"></div><span
+            class="chai-fw-700 chai-f-18 chai-text-e8e8e8">Spacing</span>
+        </div>
+        <div class="chai-dp-flex chai-flex-col chai-g-5">
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-38bdf8">chai-p-{n}</code><span class="chai-text-444444 chai-f-14">all sides
+              padding</span></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-38bdf8">chai-pt · pr · pb · pl</code><span
+              class="chai-text-444444 chai-f-14">directional padding</span></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-38bdf8">chai-m-{n|auto}</code><span
+              class="chai-text-444444 chai-f-14">margin · chai-m-auto centers</span></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-38bdf8">chai-mt · mr · mb · ml</code><span
+              class="chai-text-444444 chai-f-14">directional margin</span></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-38bdf8">chai-g-{n}</code><span class="chai-text-444444 chai-f-14">row + col
+              gap</span></div>
+        </div>
+      </div>
+
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <div class="chai-dp-flex chai-items-center chai-g-8 chai-mb-16">
+          <div class="chai-bg-f59e0b chai-rounded-2 chai-w-3 chai-h-16"></div><span
+            class="chai-fw-700 chai-f-18 chai-text-e8e8e8">Flexbox · Grid</span>
+        </div>
+        <div class="chai-dp-flex chai-flex-col chai-g-5">
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-f59e0b">chai-flex-{row|col|row-rev|col-rev}</code></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-f59e0b">chai-justify-{center|start|end|between|around|evenly}</code></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-f59e0b">chai-items-{center|start|end|stretch}</code></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-f59e0b">chai-align-{center|start|end|stretch|between|around|evenly}</code>
+          </div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-f59e0b">chai-cols-{n} · chai-rows-{n}</code><span
+              class="chai-text-444444 chai-f-14">grid</span></div>
+        </div>
+      </div>
+
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <div class="chai-dp-flex chai-items-center chai-g-8 chai-mb-16">
+          <div class="chai-bg-a78bfa chai-rounded-2 chai-w-3 chai-h-16"></div><span
+            class="chai-fw-700 chai-f-18 chai-text-e8e8e8">Typography · Color</span>
+        </div>
+        <div class="chai-dp-flex chai-flex-col chai-g-5">
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-a78bfa">chai-f-{n}</code><span class="chai-text-444444 chai-f-14">font-size
+              px</span></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-a78bfa">chai-fw-{100–900}</code><span
+              class="chai-text-444444 chai-f-14">font-weight</span></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-a78bfa">chai-text-{center|left|right|justify}</code></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-a78bfa">chai-text-{uppercase|lowercase|capitalize}</code></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-a78bfa">chai-text-{name|hex} · chai-bg-{name|hex}</code><span
+              class="chai-text-444444 chai-f-14">color</span></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-a78bfa">chai-op-{0–1}</code><span
+              class="chai-text-444444 chai-f-14">opacity</span></div>
+        </div>
+      </div>
+
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <div class="chai-dp-flex chai-items-center chai-g-8 chai-mb-16">
+          <div class="chai-bg-fb7185 chai-rounded-2 chai-w-3 chai-h-16"></div><span
+            class="chai-fw-700 chai-f-18 chai-text-e8e8e8">Transforms · Transitions</span>
+        </div>
+        <div class="chai-dp-flex chai-flex-col chai-g-5">
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-fb7185">chai-scale-{n}</code><span
+              class="chai-text-444444 chai-f-14">transform: scale</span></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-fb7185">chai-rotate-{deg}</code><span
+              class="chai-text-444444 chai-f-14">transform: rotate</span></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-fb7185">chai-tX-{n}</code><span
+              class="chai-text-444444 chai-f-14">translateX px</span></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-fb7185">chai-tY-{n}</code><span
+              class="chai-text-444444 chai-f-14">translateY px</span></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-fb7185">chai-transition-{property}-{duration}-{timing}</code></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><span
+              class="chai-f-14 chai-text-444444">timing: ease · ease-in · ease-out · ease-in-out · linear</span></div>
+        </div>
+      </div>
+
+      <div class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-24">
+        <div class="chai-dp-flex chai-items-center chai-g-8 chai-mb-16">
+          <div class="chai-bg-14b8a6 chai-rounded-2 chai-w-3 chai-h-16"></div><span
+            class="chai-fw-700 chai-f-18 chai-text-e8e8e8">Borders · Position · Overflow · Cursor</span>
+        </div>
+        <div class="chai-dp-flex chai-flex-col chai-g-5">
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-14b8a6">chai-border-{w}-{color}-{solid|dashed|dotted}</code></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-14b8a6">chai-rounded-{n}</code><span
+              class="chai-text-444444 chai-f-14">border-radius px</span></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-14b8a6">chai-fix-{abs|rel|fixed|sticky}</code></div>
+          <div
+            class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12 chai-dp-flex chai-justify-between">
+            <code class="chai-f-15 chai-text-14b8a6">chai-t · r · b · l · z</code><span
+              class="chai-text-444444 chai-f-14">offsets + z-index</span></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-14b8a6">chai-ovr-{hidden|auto|scroll} · ovr-x/y-{}</code></div>
+          <div class="chai-bg-0a0a0a chai-rounded-6 chai-pt-7 chai-pb-7 chai-pl-12 chai-pr-12"><code
+              class="chai-f-15 chai-text-14b8a6">chai-cur-{ptr|NA|text|help|move|grab|crosshair|wait}</code></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="chai-h-1 chai-bg-1e1e1e"></div>
+
+  <!-- ═══════ FOOTER ═══════ -->
+  <footer class="chai-wmax-1280 chai-mx-auto chai-pl-32 chai-pr-32 chai-pt-80 chai-pb-80">
+    <div class="chai-mb-48 chai-ovr-hidden">
+      <div class="chai-fw-700 chai-text-1e1e1e leading-none chai-text-uppercase"
+        style="letter-spacing:-0.02em;font-size:clamp(60px,10vw,120px)">chai-wind</div>
+    </div>
+    <div class="chai-dp-grid chai-cols-2 chai-g-3">
+      <div class="chai-dp-flex chai-flex-col chai-g-20">
+        <p class="chai-m-0 chai-text-666666 chai-f-16 leading-tall chai-wmax-380">utility-first CSS-in-JS. zero
+          dependencies. Works anywhere with a DOM. No bundler. No build step. Just classes.</p>
+        <div
+          class="chai-bg-141414 chai-border-1-252525 chai-rounded-8 chai-pt-14 chai-pb-14 chai-pl-20 chai-pr-20 chai-dp-flex chai-items-center chai-justify-between chai-wmax-360">
+          <code class="chai-f-18 chai-text-aaaaaa">$ npm install chai-wind</code>
+          <span class="chai-text-22c55e chai-f-14 chai-fw-700 chai-text-uppercase tracking">copy</span>
+        </div>
+        <div class="chai-dp-flex chai-g-10">
+          <a href="#colors"
+            class="chai-bg-22c55e chai-text-0a0a0a chai-fw-700 chai-f-16 chai-pt-10 chai-pb-10 chai-pl-20 chai-pr-20 chai-rounded-6 chai-cur-ptr h-bright chai-transition-all-0.18-ease">Read
+            Docs →</a>
+          <a href="#cheatsheet"
+            class="chai-bg-161616 chai-border-1-333333 chai-text-888888 chai-f-16 chai-pt-10 chai-pb-10 chai-pl-20 chai-pr-20 chai-rounded-6 chai-cur-ptr h-bg chai-transition-all-0.18-ease">Cheat
+            Sheet</a>
+        </div>
+      </div>
+      <div
+        class="chai-bg-111111 chai-border-1-252525 chai-rounded-8 chai-p-20 chai-dp-flex chai-justify-between chai-items-center">
+        <div class="chai-dp-flex chai-g-16">
+          <div class="chai-dp-flex chai-flex-col chai-g-4"><span
+              class="chai-text-22c55e chai-fw-700 chai-f-26">0</span><span
+              class="chai-text-444444 chai-f-14">deps</span></div>
+          <div class="chai-dp-flex chai-flex-col chai-g-4"><span
+              class="chai-text-22c55e chai-fw-700 chai-f-26">~3kb</span><span
+              class="chai-text-444444 chai-f-14">gzip</span></div>
+          <div class="chai-dp-flex chai-flex-col chai-g-4"><span
+              class="chai-text-22c55e chai-fw-700 chai-f-26">ESM</span><span
+              class="chai-text-444444 chai-f-14">module</span></div>
+        </div>
+        <span
+          class="chai-bg-22c55e chai-text-0a0a0a chai-f-14 chai-fw-700 chai-pt-4 chai-pb-4 chai-pl-10 chai-pr-10 chai-rounded-999 chai-text-uppercase tracking">MIT</span>
+      </div>
+    </div>
+    <div class="chai-mt-60 chai-pt-24 chai-dp-flex chai-justify-between chai-items-center"
+      style="border-top:1px solid #1e1e1e">
+      <span class="chai-text-333333 chai-f-15">chai-wind · built on the web platform</span>
+      <span class="chai-text-333333 chai-f-15">zero-config · zero-deps · ESM</span>
+    </div>
+  </footer>
+
+
+  <script type="module">
+    import { applyChaiStyles } from '../src/index.js';
+    applyChaiStyles();
+  </script>
+</body>
+
+</html>
