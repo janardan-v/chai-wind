@@ -1,9 +1,11 @@
 {
   "name": "chai-winder",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "main": "src/index.js",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "keywords": [
     "css",
     "utility",
