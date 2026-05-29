@@ -1,17 +1,23 @@
 {
-  "name": "chai-winder",
-  "version": "1.0.9",
+  "name": "my-winder",
+  "version": "1.1.7",
   "type": "module",
-  "main": "index.js",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./auto": "./src/auto.js"
+  },
   "files": [
-    "src",
-    "index.js"
+    "src"
   ],
   "keywords": [
     "css",
     "utility",
     "runtime",
-    "styling"
+    "styling",
+    "tailwind",
+    "utility-css",
+    "atomic-css"
   ],
   "author": "Janardhan Verma",
   "license": "ISC"

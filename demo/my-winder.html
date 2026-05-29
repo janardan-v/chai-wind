@@ -1,0 +1,2411 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>my-winder 🍵 — utility-first CSS-in-JS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Fira Code", monospace;
+        line-height: 1.6;
+      }
+      a {
+        text-decoration: none;
+      }
+      code,
+      pre {
+        font-family: "Fira Code", monospace;
+      }
+      section {
+        scroll-margin-top: 72px;
+      }
+
+      .display-font {
+        font-family: "Syne", sans-serif;
+      }
+      .tracking {
+        letter-spacing: 0.1em;
+      }
+      .tracking-wide {
+        letter-spacing: 0.18em;
+      }
+      .tracking-tight {
+        letter-spacing: -0.02em;
+      }
+      .leading-none {
+        line-height: 1;
+      }
+      .leading-snug {
+        line-height: 1.3;
+      }
+      .leading-loose {
+        line-height: 1.9;
+      }
+      .flex-1 {
+        flex: 1;
+      }
+      .flex-wrap {
+        flex-wrap: wrap;
+      }
+      .shrink-0 {
+        flex-shrink: 0;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .dot-sm {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .nav-glass {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid #1a1a1a;
+      }
+
+      .gradient-text {
+        background: linear-gradient(
+          135deg,
+          #22c55e 0%,
+          #4ade80 50%,
+          #86efac 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-glow {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, #22c55e18 0%, transparent 70%);
+        top: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+      .grid-bg {
+        background-image:
+          linear-gradient(#1a1a1a 1px, transparent 1px),
+          linear-gradient(90deg, #1a1a1a 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+
+      .h-green:hover {
+        color: #22c55e !important;
+      }
+      .h-bright:hover {
+        filter: brightness(1.15);
+      }
+      .h-card:hover {
+        border-color: #22c55e55 !important;
+        transform: translateY(-6px);
+        transition: all 0.3s ease;
+      }
+      .h-bg:hover {
+        background-color: #1a1a1a !important;
+      }
+      .code-pill:hover {
+        background-color: #161616;
+        border-color: #333333;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse-green {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 #22c55e44;
+        }
+        50% {
+          box-shadow: 0 0 0 8px #22c55e00;
+        }
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+      .a1 {
+        animation: fadeUp 0.7s ease both;
+      }
+      .a2 {
+        animation: fadeUp 0.7s 0.1s ease both;
+      }
+      .a3 {
+        animation: fadeUp 0.7s 0.2s ease both;
+      }
+      .a4 {
+        animation: fadeUp 0.7s 0.3s ease both;
+      }
+      .a5 {
+        animation: fadeUp 0.7s 0.45s ease both;
+      }
+      .pulse {
+        animation: pulse-green 2.5s infinite;
+      }
+      .float {
+        animation: float 4s ease-in-out infinite;
+      }
+
+      .code-block {
+        tab-size: 2;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .sy-g {
+        color: #22c55e;
+      }
+      .sy-y {
+        color: #fbbf24;
+      }
+      .sy-p {
+        color: #a78bfa;
+      }
+      .sy-gray {
+        color: #555555;
+      }
+
+      .h-divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          #1e1e1e 30%,
+          #1e1e1e 70%,
+          transparent
+        );
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #252525;
+        border-radius: 3px;
+      }
+      ::selection {
+        background: #22c55e33;
+        color: #22c55e;
+      }
+
+      /* demo helpers */
+      .demo-box {
+        min-height: 48px;
+      }
+      .ovr-demo {
+        height: 80px;
+        overflow: auto;
+      }
+      .prop-label {
+        font-size: 11px;
+        color: #444;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px;
+      }
+    </style>
+  </head>
+
+  <body class="my-bg-0a0a0a my-text-e8e8e8">
+    <!-- ═══ NAV ═══ -->
+    <nav
+      class="nav-glass my-fix-fixed my-t-0 my-l-0 my-r-0 my-z-999 my-bg-0a0a0a"
+    >
+      <div
+        class="my-wmax-1280 my-mx-auto my-dp-flex my-items-center my-justify-between my-pt-16 my-pb-16 my-pl-32 my-pr-32"
+      >
+        <div class="my-dp-flex my-items-center my-g-10">
+          <span class="my-text-22c55e my-fw-700 my-f-17 display-font"
+            >my-winder</span
+          >
+          <span class="my-text-333333 my-f-13">🍵</span>
+          <span
+            class="my-bg-22c55e my-text-0a0a0a my-f-9 my-fw-700 my-rounded-4 my-pt-2 my-pb-2 my-pl-6 my-pr-6 my-text-uppercase tracking pulse"
+            >v1.1.7</span
+          >
+        </div>
+        <div class="my-dp-flex my-items-center my-g-24">
+          <a
+            href="#install"
+            class="my-text-555555 my-f-12 my-text-uppercase tracking h-green my-transition-color-0.18-ease"
+            >Install</a
+          >
+          <a
+            href="#reference"
+            class="my-text-555555 my-f-12 my-text-uppercase tracking h-green my-transition-color-0.18-ease"
+            >Reference</a
+          >
+          <a
+            href="#demos"
+            class="my-text-555555 my-f-12 my-text-uppercase tracking h-green my-transition-color-0.18-ease"
+            >Demos</a
+          >
+          <a
+            href="#cheatsheet"
+            class="my-text-555555 my-f-12 my-text-uppercase tracking h-green my-transition-color-0.18-ease"
+            >Cheat Sheet</a
+          >
+        </div>
+        <div
+          class="my-bg-111111 my-border-1-252525 my-rounded-8 my-pt-8 my-pb-8 my-pl-14 my-pr-14 my-dp-flex my-items-center my-g-8 code-pill my-transition-all-0.18-ease my-cur-ptr"
+          onclick="navigator.clipboard.writeText('npm install my-winder')"
+        >
+          <code class="my-text-22c55e my-f-12">npm i my-winder</code>
+          <span class="my-text-333333 my-f-11">⎘</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ═══ HERO ═══ -->
+    <section
+      class="my-fix-rel grid-bg"
+      style="overflow: hidden; padding-top: 72px"
+    >
+      <div class="hero-glow"></div>
+      <div
+        class="my-wmax-1280 my-mx-auto my-pl-32 my-pr-32 my-pt-100 my-pb-100"
+      >
+        <div
+          class="my-dp-flex my-flex-col my-items-center my-text-center my-g-28"
+        >
+          <div
+            class="a1 my-dp-flex my-items-center my-g-8 my-bg-111111 my-border-1-22c55e22 my-rounded-999 my-pt-6 my-pb-6 my-pl-16 my-pr-16"
+          >
+            <div class="dot-sm my-bg-22c55e pulse"></div>
+            <span class="my-text-555555 my-f-12 my-text-uppercase tracking"
+              >Zero deps · No bundler · ESM · ~3kb</span
+            >
+          </div>
+          <div class="a2">
+            <h1
+              class="display-font my-fw-800 my-text-center leading-none tracking-tight"
+              style="font-size: clamp(52px, 8vw, 108px)"
+            >
+              <span class="my-text-e8e8e8">style with</span><br />
+              <span class="gradient-text">class names.</span>
+            </h1>
+          </div>
+          <p class="a3 my-f-18 my-text-555555 my-wmax-540 leading-loose">
+            my-winder turns
+            <code class="my-text-22c55e my-f-16">my-*</code> class names into
+            inline styles at runtime — no build step, no stylesheet, no
+            compiler.
+          </p>
+          <div class="a4 my-dp-flex my-items-center my-g-12 flex-wrap">
+            <a
+              href="#demos"
+              class="my-bg-22c55e my-text-0a0a0a my-fw-700 my-f-15 my-pt-12 my-pb-12 my-pl-28 my-pr-28 my-rounded-8 my-cur-ptr h-bright my-transition-all-0.2-ease"
+              >See all demos →</a
+            >
+            <a
+              href="#install"
+              class="my-bg-111111 my-border-1-252525 my-text-888888 my-f-15 my-pt-12 my-pb-12 my-pl-28 my-pr-28 my-rounded-8 my-cur-ptr h-bg my-transition-all-0.2-ease"
+              >Get started</a
+            >
+          </div>
+          <div
+            class="a5 my-wmax-640 my-bg-111111 my-border-1-252525 my-rounded-12 my-ovr-hidden float"
+            style="text-align: left; width: min(640px, 100%)"
+          >
+            <div
+              class="my-bg-0f0f0f my-dp-flex my-items-center my-g-6 my-pt-12 my-pb-12 my-pl-16 my-pr-16"
+              style="border-bottom: 1px solid #1a1a1a"
+            >
+              <div class="dot shrink-0" style="background: #ff5f57"></div>
+              <div class="dot shrink-0" style="background: #ffbd2e"></div>
+              <div class="dot shrink-0" style="background: #28c840"></div>
+              <span class="my-text-333333 my-f-12 my-ml-8">index.html</span>
+            </div>
+            <div class="code-block my-p-24 my-f-13 leading-loose">
+              <span class="sy-gray"
+                >&lt;!-- add classes → styles apply automatically --&gt;</span
+              >
+              <span class="my-text-e8e8e8">&lt;</span
+              ><span class="sy-y">div</span>
+              <span class="sy-p">class</span>=<span class="sy-g"
+                >"my-dp-flex my-flex-col my-g-16 my-p-24 my-bg-111111
+                my-rounded-12 my-border-1-22c55e33"</span
+              ><span class="my-text-e8e8e8">&gt; &lt;</span
+              ><span class="sy-y">h2</span>
+              <span class="sy-p">class</span>=<span class="sy-g"
+                >"my-f-24 my-fw-700 my-text-e8e8e8"</span
+              ><span class="my-text-e8e8e8">&gt;Hello, my-winder 🍵&lt;/</span
+              ><span class="sy-y">h2</span
+              ><span class="my-text-e8e8e8">&gt; &lt;</span
+              ><span class="sy-y">span</span>
+              <span class="sy-p">class</span>=<span class="sy-g"
+                >"my-bg-22c55e my-text-0a0a0a my-fw-700 my-rounded-999 my-pt-4
+                my-pb-4 my-pl-12 my-pr-12"</span
+              ><span class="my-text-e8e8e8">&gt;zero config&lt;/</span
+              ><span class="sy-y">span</span
+              ><span class="my-text-e8e8e8">&gt; &lt;/</span
+              ><span class="sy-y">div</span
+              ><span class="my-text-e8e8e8">&gt;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-divider"></div>
+
+    <!-- ═══ INSTALL ═══ -->
+    <section
+      id="install"
+      class="my-wmax-1280 my-mx-auto my-pl-32 my-pr-32 my-pt-80 my-pb-80"
+    >
+      <p
+        class="my-text-22c55e my-f-13 my-fw-600 my-text-uppercase tracking-wide my-mb-12"
+      >
+        Get started
+      </p>
+      <h2
+        class="display-font my-fw-700 my-f-42 my-text-e8e8e8 leading-snug my-mb-40"
+      >
+        Two ways in.
+      </h2>
+      <div class="my-dp-grid my-cols-2 my-g-24">
+        <!-- CDN -->
+        <div class="my-bg-111111 my-border-1-1e1e1e my-rounded-12 my-p-32">
+          <div class="my-dp-flex my-items-center my-justify-between my-mb-24">
+            <div>
+              <h3 class="display-font my-fw-700 my-f-20 my-text-e8e8e8 my-mb-4">
+                CDN / esm.sh
+              </h3>
+              <p class="my-f-13 my-text-444444">
+                No install. Just a script tag.
+              </p>
+            </div>
+            <span
+              class="my-bg-22c55e22 my-text-22c55e my-f-11 my-fw-700 my-rounded-6 my-pt-4 my-pb-4 my-pl-10 my-pr-10 tracking my-text-uppercase"
+              >Quickest</span
+            >
+          </div>
+          <div
+            class="code-block my-bg-0a0a0a my-rounded-8 my-p-20 my-f-12 leading-loose"
+            style="overflow-x: auto"
+          >
+            <span class="sy-gray"
+              >&lt;!-- place before &lt;/body&gt; --&gt;</span
+            >
+            <span class="my-text-e8e8e8">&lt;</span
+            ><span class="sy-y">script</span>
+            <span class="sy-p">type</span>=<span class="sy-g">"module"</span
+            ><span class="my-text-e8e8e8">&gt; import</span>
+            <span class="my-text-a78bfa">{ applyMyStyles }</span>
+            <span class="my-text-e8e8e8">from</span>
+            <span class="sy-g">"https://esm.sh/my-winder@1.1.7"</span
+            ><span class="my-text-e8e8e8">; applyMyStyles(); &lt;/</span
+            ><span class="sy-y">script</span
+            ><span class="my-text-e8e8e8">&gt;</span>
+          </div>
+          <p class="my-f-12 my-text-333333 my-mt-16">
+            Or auto-init with no function call:
+          </p>
+          <div
+            class="code-block my-bg-0a0a0a my-rounded-8 my-p-16 my-f-12 my-mt-8"
+            style="overflow-x: auto"
+          >
+            <span class="my-text-e8e8e8">&lt;</span
+            ><span class="sy-y">script</span>
+            <span class="sy-p">type</span>=<span class="sy-g">"module"</span>
+            <span class="sy-p">src</span>=<span class="sy-g"
+              >"https://esm.sh/my-winder@1.1.7/auto"</span
+            ><span class="my-text-e8e8e8">&gt;&lt;/</span
+            ><span class="sy-y">script</span
+            ><span class="my-text-e8e8e8">&gt;</span>
+          </div>
+        </div>
+        <!-- npm -->
+        <div class="my-bg-111111 my-border-1-1e1e1e my-rounded-12 my-p-32">
+          <div class="my-mb-24">
+            <h3 class="display-font my-fw-700 my-f-20 my-text-e8e8e8 my-mb-4">
+              npm
+            </h3>
+            <p class="my-f-13 my-text-444444">
+              For bundled projects (Vite, Webpack, etc.)
+            </p>
+          </div>
+          <div
+            class="code-block my-bg-0a0a0a my-rounded-8 my-p-20 my-f-12 leading-loose"
+          >
+            <span class="sy-gray"># install</span>
+            <span class="sy-g">npm install my-winder</span>
+
+            <span class="sy-gray"># import and call</span>
+            <span class="my-text-e8e8e8">import</span>
+            <span class="my-text-a78bfa">{ applyMyStyles }</span>
+            <span class="my-text-e8e8e8">from</span>
+            <span class="sy-g">"my-winder"</span
+            ><span class="my-text-e8e8e8">; applyMyStyles();</span>
+
+            <span class="sy-gray"># or auto side-effect import</span>
+            <span class="my-text-e8e8e8">import</span>
+            <span class="sy-g">"my-winder/auto"</span
+            ><span class="my-text-e8e8e8">;</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-divider"></div>
+
+    <!-- ═══ REFERENCE CARDS ═══ -->
+    <section
+      id="reference"
+      class="my-pt-80 my-pb-80"
+      style="background: #0d0d0d"
+    >
+      <div class="my-wmax-1280 my-mx-auto my-pl-32 my-pr-32">
+        <p
+          class="my-text-22c55e my-f-13 my-fw-600 my-text-uppercase tracking-wide my-mb-12"
+        >
+          Class reference
+        </p>
+        <h2
+          class="display-font my-fw-700 my-f-42 my-text-e8e8e8 leading-snug my-mb-40"
+        >
+          Every key, mapped.
+        </h2>
+        <div class="my-dp-grid my-cols-2 my-g-16">
+          <!-- Color & Opacity -->
+          <div class="my-bg-111111 my-border-1-1e1e1e my-rounded-10 my-p-24">
+            <div class="my-dp-flex my-items-center my-g-8 my-mb-20">
+              <div class="my-bg-22c55e my-rounded-4 my-w-4 my-h-18"></div>
+              <span class="display-font my-fw-700 my-f-18 my-text-e8e8e8"
+                >Color & Opacity</span
+              >
+            </div>
+            <div class="my-dp-flex my-flex-col my-g-6">
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14 my-dp-flex my-justify-between my-items-center"
+              >
+                <code class="my-text-22c55e my-f-13">my-bg-{hex|name}</code
+                ><span class="my-text-444444 my-f-12">background-color</span>
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14 my-dp-flex my-justify-between my-items-center"
+              >
+                <code class="my-text-22c55e my-f-13">my-text-{hex|name}</code
+                ><span class="my-text-444444 my-f-12">color</span>
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14 my-dp-flex my-justify-between my-items-center"
+              >
+                <code class="my-text-22c55e my-f-13">my-op-{0–1}</code
+                ><span class="my-text-444444 my-f-12">opacity</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Typography -->
+          <div class="my-bg-111111 my-border-1-1e1e1e my-rounded-10 my-p-24">
+            <div class="my-dp-flex my-items-center my-g-8 my-mb-20">
+              <div class="my-bg-a78bfa my-rounded-4 my-w-4 my-h-18"></div>
+              <span class="display-font my-fw-700 my-f-18 my-text-e8e8e8"
+                >Typography</span
+              >
+            </div>
+            <div class="my-dp-flex my-flex-col my-g-6">
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14 my-dp-flex my-justify-between my-items-center"
+              >
+                <code class="my-text-a78bfa my-f-13">my-f-{n}</code
+                ><span class="my-text-444444 my-f-12">font-size px</span>
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14 my-dp-flex my-justify-between my-items-center"
+              >
+                <code class="my-text-a78bfa my-f-13">my-fw-{100–900}</code
+                ><span class="my-text-444444 my-f-12">font-weight</span>
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-a78bfa my-f-13"
+                  >my-text-{center|left|right|justify|uppercase|lowercase|capitalize}</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14 my-dp-flex my-justify-between my-items-center"
+              >
+                <code class="my-text-a78bfa my-f-13"
+                  >my-dec-{underline|overline|through}-{color}-{w}</code
+                ><span class="my-text-444444 my-f-12">decoration</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spacing -->
+          <div class="my-bg-111111 my-border-1-1e1e1e my-rounded-10 my-p-24">
+            <div class="my-dp-flex my-items-center my-g-8 my-mb-20">
+              <div class="my-bg-f59e0b my-rounded-4 my-w-4 my-h-18"></div>
+              <span class="display-font my-fw-700 my-f-18 my-text-e8e8e8"
+                >Spacing</span
+              >
+            </div>
+            <div class="my-dp-flex my-flex-col my-g-6">
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-f59e0b my-f-13"
+                  >my-p-{n} · my-pt · my-pr · my-pb · my-pl</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-f59e0b my-f-13"
+                  >my-m-{n} · my-mt · my-mr · my-mb · my-ml</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14 my-dp-flex my-justify-between my-items-center"
+              >
+                <code class="my-text-f59e0b my-f-13"
+                  >my-mx-{n|auto} · my-my-{n}</code
+                ><span class="my-text-444444 my-f-12">axis</span>
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14 my-dp-flex my-justify-between my-items-center"
+              >
+                <code class="my-text-f59e0b my-f-13">my-g-{n}</code
+                ><span class="my-text-444444 my-f-12">row+col gap</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sizing -->
+          <div class="my-bg-111111 my-border-1-1e1e1e my-rounded-10 my-p-24">
+            <div class="my-dp-flex my-items-center my-g-8 my-mb-20">
+              <div class="my-bg-14b8a6 my-rounded-4 my-w-4 my-h-18"></div>
+              <span class="display-font my-fw-700 my-f-18 my-text-e8e8e8"
+                >Sizing</span
+              >
+            </div>
+            <div class="my-dp-flex my-flex-col my-g-6">
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14 my-dp-flex my-justify-between my-items-center"
+              >
+                <code class="my-text-14b8a6 my-f-13">my-w-{n} · my-h-{n}</code
+                ><span class="my-text-444444 my-f-12">px or keyword</span>
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-14b8a6 my-f-13"
+                  >my-wmin · my-wmax · my-hmin · my-hmax</code
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Display + Flexbox + Grid -->
+          <div class="my-bg-111111 my-border-1-1e1e1e my-rounded-10 my-p-24">
+            <div class="my-dp-flex my-items-center my-g-8 my-mb-20">
+              <div class="my-bg-fb7185 my-rounded-4 my-w-4 my-h-18"></div>
+              <span class="display-font my-fw-700 my-f-18 my-text-e8e8e8"
+                >Display · Flex · Grid</span
+              >
+            </div>
+            <div class="my-dp-flex my-flex-col my-g-6">
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-fb7185 my-f-13"
+                  >my-dp-{flex|grid|block|inline|inline-block|none}</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-fb7185 my-f-13"
+                  >my-flex-{row|col|row-rev|col-rev}</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-fb7185 my-f-13"
+                  >my-justify-{start|center|end|between|around|evenly}</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-fb7185 my-f-13"
+                  >my-items-{start|center|end|stretch}</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-fb7185 my-f-13"
+                  >my-align-{start|center|end|stretch|between|around|evenly}</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-fb7185 my-f-13"
+                  >my-cols-{n} · my-rows-{n}</code
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Position + Border + Effects -->
+          <div class="my-bg-111111 my-border-1-1e1e1e my-rounded-10 my-p-24">
+            <div class="my-dp-flex my-items-center my-g-8 my-mb-20">
+              <div class="my-bg-818cf8 my-rounded-4 my-w-4 my-h-18"></div>
+              <span class="display-font my-fw-700 my-f-18 my-text-e8e8e8"
+                >Position · Border · Effects</span
+              >
+            </div>
+            <div class="my-dp-flex my-flex-col my-g-6">
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-818cf8 my-f-13"
+                  >my-fix-{rel|abs|fixed|sticky}</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-818cf8 my-f-13"
+                  >my-t · my-r · my-b · my-l · my-z</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-818cf8 my-f-13"
+                  >my-border-{w}-{color}-{solid|dashed|dotted}</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-818cf8 my-f-13">my-rounded-{n}</code>
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-818cf8 my-f-13"
+                  >my-ovr-{hidden|auto|scroll} · my-ovr-{x|y}-{val}</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-818cf8 my-f-13"
+                  >my-scale · my-rotate · my-tX · my-tY</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-818cf8 my-f-13"
+                  >my-transition-{prop}-{dur}-{timing}</code
+                >
+              </div>
+              <div
+                class="my-bg-0a0a0a my-rounded-6 my-pt-8 my-pb-8 my-pl-14 my-pr-14"
+              >
+                <code class="my-text-818cf8 my-f-13"
+                  >my-cur-{ptr|NA|text|help|move|grab|crosshair|wait}</code
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-divider"></div>
+
+    <!-- ═══════════════════════════════════════════
+       DEMOS — one per supported property group
+  ════════════════════════════════════════════ -->
+    <section
+      id="demos"
+      class="my-wmax-1280 my-mx-auto my-pl-32 my-pr-32 my-pt-80 my-pb-80"
+    >
+      <p
+        class="my-text-22c55e my-f-13 my-fw-600 my-text-uppercase tracking-wide my-mb-12"
+      >
+        Live demos
+      </p>
+      <h2
+        class="display-font my-fw-700 my-f-42 my-text-e8e8e8 leading-snug my-mb-64"
+      >
+        Every property. Live.
+      </h2>
+
+      <!-- ── 1. BACKGROUND COLOR ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-bg-{name} · my-bg-{hex}</p>
+        <div class="my-dp-flex my-g-8 flex-wrap">
+          <div
+            class="my-bg-black my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-e8e8e8 my-f-12">black</code>
+          </div>
+          <div
+            class="my-bg-white my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-0a0a0a my-f-12">white</code>
+          </div>
+          <div
+            class="my-bg-red my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-white my-f-12">red</code>
+          </div>
+          <div
+            class="my-bg-green my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-white my-f-12">green</code>
+          </div>
+          <div
+            class="my-bg-blue my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-white my-f-12">blue</code>
+          </div>
+          <div
+            class="my-bg-yellow my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-0a0a0a my-f-12">yellow</code>
+          </div>
+          <div
+            class="my-bg-purple my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-white my-f-12">purple</code>
+          </div>
+          <div
+            class="my-bg-orange my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-white my-f-12">orange</code>
+          </div>
+          <div
+            class="my-bg-pink my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-white my-f-12">pink</code>
+          </div>
+          <div
+            class="my-bg-gray my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-white my-f-12">gray</code>
+          </div>
+          <div
+            class="my-bg-silver my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-0a0a0a my-f-12">silver</code>
+          </div>
+          <div
+            class="my-bg-22c55e my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-0a0a0a my-f-12">#22c55e</code>
+          </div>
+          <div
+            class="my-bg-fb7185 my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-0a0a0a my-f-12">#fb7185</code>
+          </div>
+          <div
+            class="my-bg-a78bfa my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-0a0a0a my-f-12">#a78bfa</code>
+          </div>
+          <div
+            class="my-bg-f59e0b my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-0a0a0a my-f-12">#f59e0b</code>
+          </div>
+          <div
+            class="my-bg-14b8a6 my-rounded-6 my-pt-10 my-pb-10 my-pl-16 my-pr-16"
+          >
+            <code class="my-text-0a0a0a my-f-12">#14b8a6</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2. TEXT COLOR ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-text-{name} · my-text-{hex}</p>
+        <div class="my-dp-flex my-g-16 flex-wrap my-items-center">
+          <span class="my-text-red my-f-20 my-fw-600">red</span>
+          <span class="my-text-green my-f-20 my-fw-600">green</span>
+          <span class="my-text-blue my-f-20 my-fw-600">blue</span>
+          <span class="my-text-yellow my-f-20 my-fw-600">yellow</span>
+          <span class="my-text-purple my-f-20 my-fw-600">purple</span>
+          <span class="my-text-orange my-f-20 my-fw-600">orange</span>
+          <span class="my-text-pink my-f-20 my-fw-600">pink</span>
+          <span class="my-text-gray my-f-20 my-fw-600">gray</span>
+          <span class="my-text-22c55e my-f-20 my-fw-600">#22c55e</span>
+          <span class="my-text-fb7185 my-f-20 my-fw-600">#fb7185</span>
+          <span class="my-text-a78bfa my-f-20 my-fw-600">#a78bfa</span>
+          <span class="my-text-f59e0b my-f-20 my-fw-600">#f59e0b</span>
+        </div>
+      </div>
+
+      <!-- ── 3. OPACITY ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-op-{0–1}</p>
+        <div class="my-dp-flex my-g-10 my-items-center flex-wrap">
+          <div
+            class="my-bg-22c55e my-rounded-6 my-pt-8 my-pb-8 my-pl-16 my-pr-16 my-op-1.0"
+          >
+            <code class="my-text-0a0a0a my-f-12">op-1.0</code>
+          </div>
+          <div
+            class="my-bg-22c55e my-rounded-6 my-pt-8 my-pb-8 my-pl-16 my-pr-16 my-op-0.8"
+          >
+            <code class="my-text-0a0a0a my-f-12">op-0.8</code>
+          </div>
+          <div
+            class="my-bg-22c55e my-rounded-6 my-pt-8 my-pb-8 my-pl-16 my-pr-16 my-op-0.6"
+          >
+            <code class="my-text-0a0a0a my-f-12">op-0.6</code>
+          </div>
+          <div
+            class="my-bg-22c55e my-rounded-6 my-pt-8 my-pb-8 my-pl-16 my-pr-16 my-op-0.4"
+          >
+            <code class="my-text-0a0a0a my-f-12">op-0.4</code>
+          </div>
+          <div
+            class="my-bg-22c55e my-rounded-6 my-pt-8 my-pb-8 my-pl-16 my-pr-16 my-op-0.2"
+          >
+            <code class="my-text-0a0a0a my-f-12">op-0.2</code>
+          </div>
+          <div
+            class="my-bg-22c55e my-rounded-6 my-pt-8 my-pb-8 my-pl-16 my-pr-16 my-op-0.1"
+          >
+            <code class="my-text-0a0a0a my-f-12">op-0.1</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 4. FONT SIZE ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-f-{n}</p>
+        <div class="my-dp-flex my-flex-col my-g-6">
+          <span class="my-text-e8e8e8 my-f-48 my-fw-600 leading-none"
+            >my-f-48</span
+          >
+          <span class="my-text-e8e8e8 my-f-32 my-fw-600 leading-none"
+            >my-f-32</span
+          >
+          <span class="my-text-e8e8e8 my-f-24 my-fw-600 leading-none"
+            >my-f-24</span
+          >
+          <span class="my-text-e8e8e8 my-f-18 my-fw-600 leading-none"
+            >my-f-18</span
+          >
+          <span class="my-text-e8e8e8 my-f-14 my-fw-600 leading-none"
+            >my-f-14</span
+          >
+          <span class="my-text-e8e8e8 my-f-11 my-fw-600 leading-none"
+            >my-f-11</span
+          >
+        </div>
+      </div>
+
+      <!-- ── 5. FONT WEIGHT ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-fw-{100–900}</p>
+        <div class="my-dp-flex my-g-20 flex-wrap my-items-end">
+          <span class="my-text-e8e8e8 my-f-22 my-fw-100">fw-100</span>
+          <span class="my-text-e8e8e8 my-f-22 my-fw-200">fw-200</span>
+          <span class="my-text-e8e8e8 my-f-22 my-fw-300">fw-300</span>
+          <span class="my-text-e8e8e8 my-f-22 my-fw-400">fw-400</span>
+          <span class="my-text-e8e8e8 my-f-22 my-fw-500">fw-500</span>
+          <span class="my-text-e8e8e8 my-f-22 my-fw-600">fw-600</span>
+          <span class="my-text-e8e8e8 my-f-22 my-fw-700">fw-700</span>
+          <span class="my-text-e8e8e8 my-f-22 my-fw-800">fw-800</span>
+          <span class="my-text-e8e8e8 my-f-22 my-fw-900">fw-900</span>
+        </div>
+      </div>
+
+      <!-- ── 6. TEXT ALIGN & TRANSFORM ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">
+          my-text-{center|left|right|justify|uppercase|lowercase|capitalize}
+        </p>
+        <div class="my-dp-grid my-cols-2 my-g-12">
+          <div class="my-bg-111111 my-rounded-8 my-p-16 my-text-center">
+            <span class="my-f-14 my-text-e8e8e8">my-text-center</span>
+          </div>
+          <div class="my-bg-111111 my-rounded-8 my-p-16 my-text-right">
+            <span class="my-f-14 my-text-e8e8e8">my-text-right</span>
+          </div>
+          <div class="my-bg-111111 my-rounded-8 my-p-16 my-text-left">
+            <span class="my-f-14 my-text-e8e8e8">my-text-left</span>
+          </div>
+          <div class="my-bg-111111 my-rounded-8 my-p-16">
+            <span class="my-f-14 my-text-e8e8e8 my-text-uppercase"
+              >my-text-uppercase</span
+            >
+          </div>
+          <div class="my-bg-111111 my-rounded-8 my-p-16">
+            <span class="my-f-14 my-text-e8e8e8 my-text-lowercase"
+              >MY-TEXT-LOWERCASE</span
+            >
+          </div>
+          <div class="my-bg-111111 my-rounded-8 my-p-16">
+            <span class="my-f-14 my-text-e8e8e8 my-text-capitalize"
+              >my-text-capitalize</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 7. TEXT DECORATION ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">
+          my-dec-{underline|overline|through}-{color}-{width}
+        </p>
+        <div class="my-dp-flex my-g-24 flex-wrap my-items-center">
+          <span
+            class="my-f-18 my-fw-500 my-text-e8e8e8 my-dec-underline-22c55e-2"
+            >my-dec-underline-22c55e-2</span
+          >
+          <span
+            class="my-f-18 my-fw-500 my-text-e8e8e8 my-dec-overline-fb7185-2"
+            >my-dec-overline-fb7185-2</span
+          >
+          <span class="my-f-18 my-fw-500 my-text-e8e8e8 my-dec-through-a78bfa-2"
+            >my-dec-through-a78bfa-2</span
+          >
+          <span class="my-f-18 my-fw-500 my-text-e8e8e8 my-dec-underline-red-1"
+            >my-dec-underline-red-1</span
+          >
+        </div>
+      </div>
+
+      <!-- ── 8. PADDING ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-p-{n} · my-pt · my-pr · my-pb · my-pl</p>
+        <div class="my-dp-flex my-g-12 flex-wrap">
+          <div class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-8 my-p-8">
+            <code class="my-text-22c55e my-f-12">my-p-8</code>
+          </div>
+          <div class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-8 my-p-16">
+            <code class="my-text-22c55e my-f-12">my-p-16</code>
+          </div>
+          <div class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-8 my-p-24">
+            <code class="my-text-22c55e my-f-12">my-p-24</code>
+          </div>
+          <div
+            class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-8 my-pt-24 my-pb-4"
+          >
+            <code class="my-text-22c55e my-f-12">my-pt-24 my-pb-4</code>
+          </div>
+          <div
+            class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-8 my-pl-32 my-pr-8"
+          >
+            <code class="my-text-22c55e my-f-12">my-pl-32 my-pr-8</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 9. MARGIN ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">
+          my-m · my-mt · my-mr · my-mb · my-ml · my-mx · my-my
+        </p>
+        <div class="my-bg-111111 my-rounded-8 my-p-16">
+          <div class="my-dp-flex my-flex-col my-g-0">
+            <div
+              class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-6 my-mb-24 my-p-8"
+            >
+              <code class="my-text-22c55e my-f-12"
+                >my-mb-24 (margin below)</code
+              >
+            </div>
+            <div
+              class="my-bg-fb7185 my-rounded-6 my-mx-32 my-p-8 my-text-center"
+            >
+              <code class="my-text-0a0a0a my-f-12"
+                >my-mx-32 (left + right margin)</code
+              >
+            </div>
+            <div
+              class="my-bg-a78bfa22 my-border-1-a78bfa33 my-rounded-6 my-mt-24 my-p-8"
+            >
+              <code class="my-text-a78bfa my-f-12"
+                >my-mt-24 (margin above)</code
+              >
+            </div>
+            <div
+              class="my-bg-f59e0b22 my-border-1-f59e0b33 my-rounded-6 my-my-12 my-ml-48 my-p-8"
+            >
+              <code class="my-text-f59e0b my-f-12">my-my-12 my-ml-48</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 10. GAP ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-g-{n} — applies row-gap + column-gap</p>
+        <div class="my-dp-flex my-g-4 my-mb-16 flex-wrap">
+          <div class="my-bg-22c55e my-rounded-4 my-p-8 my-f-12 my-text-0a0a0a">
+            A
+          </div>
+          <div class="my-bg-22c55e my-rounded-4 my-p-8 my-f-12 my-text-0a0a0a">
+            B
+          </div>
+          <div class="my-bg-22c55e my-rounded-4 my-p-8 my-f-12 my-text-0a0a0a">
+            C
+          </div>
+          <code class="my-text-444444 my-f-12 my-items-center my-dp-flex"
+            >my-g-4</code
+          >
+        </div>
+        <div class="my-dp-flex my-g-24 flex-wrap">
+          <div class="my-bg-22c55e my-rounded-4 my-p-8 my-f-12 my-text-0a0a0a">
+            A
+          </div>
+          <div class="my-bg-22c55e my-rounded-4 my-p-8 my-f-12 my-text-0a0a0a">
+            B
+          </div>
+          <div class="my-bg-22c55e my-rounded-4 my-p-8 my-f-12 my-text-0a0a0a">
+            C
+          </div>
+          <code class="my-text-444444 my-f-12 my-dp-flex my-items-center"
+            >my-g-24</code
+          >
+        </div>
+      </div>
+
+      <!-- ── 11. SIZING w/h ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-w-{n} · my-h-{n}</p>
+        <div class="my-dp-flex my-g-12 my-items-end flex-wrap">
+          <div
+            class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-6 my-w-40 my-h-40 my-dp-flex my-items-center my-justify-center"
+          >
+            <code class="my-text-22c55e my-f-10">40</code>
+          </div>
+          <div
+            class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-6 my-w-60 my-h-60 my-dp-flex my-items-center my-justify-center"
+          >
+            <code class="my-text-22c55e my-f-10">60</code>
+          </div>
+          <div
+            class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-6 my-w-80 my-h-80 my-dp-flex my-items-center my-justify-center"
+          >
+            <code class="my-text-22c55e my-f-10">80</code>
+          </div>
+          <div
+            class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-6 my-w-120 my-h-40 my-dp-flex my-items-center my-justify-center"
+          >
+            <code class="my-text-22c55e my-f-10">w120 h40</code>
+          </div>
+          <div
+            class="my-bg-22c55e22 my-border-1-22c55e33 my-rounded-6 my-w-40 my-h-120 my-dp-flex my-items-center my-justify-center"
+          >
+            <code class="my-text-22c55e my-f-10">w40 h120</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 12. MIN / MAX SIZING ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-wmin · my-wmax · my-hmin · my-hmax</p>
+        <div class="my-dp-flex my-flex-col my-g-10">
+          <div class="my-bg-fb7185 my-rounded-6 my-p-8 my-wmax-300">
+            <code class="my-text-0a0a0a my-f-12"
+              >my-wmax-300 — won't grow past 300px</code
+            >
+          </div>
+          <div class="my-bg-a78bfa my-rounded-6 my-p-8 my-wmin-400">
+            <code class="my-text-0a0a0a my-f-12"
+              >my-wmin-400 — always at least 400px wide</code
+            >
+          </div>
+          <div
+            class="my-bg-f59e0b my-rounded-6 my-p-8 my-hmin-60 my-dp-flex my-items-center"
+          >
+            <code class="my-text-0a0a0a my-f-12"
+              >my-hmin-60 — at least 60px tall</code
+            >
+          </div>
+          <div
+            class="my-bg-14b8a6 my-rounded-6 my-p-8 my-hmax-40 my-ovr-hidden"
+          >
+            <code class="my-text-0a0a0a my-f-12"
+              >my-hmax-40 — clipped at 40px tall</code
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 13. DISPLAY ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">
+          my-dp-{flex|grid|block|inline|inline-block|none}
+        </p>
+        <div class="my-dp-flex my-g-10 flex-wrap my-items-center">
+          <div
+            class="my-dp-flex my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-p-12 my-g-6 my-items-center"
+          >
+            <div class="my-bg-22c55e my-rounded-4 my-w-8 my-h-8"></div>
+            <code class="my-text-22c55e my-f-12">my-dp-flex</code>
+          </div>
+          <div
+            class="my-dp-grid my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-p-12"
+            style="grid-template-columns: 1fr 1fr; gap: 4px"
+          >
+            <div class="my-bg-fb7185 my-rounded-2 my-w-10 my-h-10"></div>
+            <div class="my-bg-fb7185 my-rounded-2 my-w-10 my-h-10"></div>
+            <div class="my-bg-fb7185 my-rounded-2 my-w-10 my-h-10"></div>
+            <code class="my-text-fb7185 my-f-12">my-dp-grid</code>
+          </div>
+          <div>
+            <span
+              class="my-dp-block my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-p-12"
+              ><code class="my-text-a78bfa my-f-12">my-dp-block</code></span
+            >
+          </div>
+          <div>
+            <span
+              class="my-dp-inline my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-p-12"
+              ><code class="my-text-f59e0b my-f-12">my-dp-inline</code></span
+            >
+          </div>
+          <span
+            class="my-dp-inline-block my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-p-12"
+            ><code class="my-text-14b8a6 my-f-12"
+              >my-dp-inline-block</code
+            ></span
+          >
+          <span class="my-f-12 my-text-555555"
+            >my-dp-none → <span class="my-dp-none">hidden</span>[hidden]</span
+          >
+        </div>
+      </div>
+
+      <!-- ── 14. FLEX DIRECTION ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-flex-{row|col|row-rev|col-rev}</p>
+        <div class="my-dp-grid my-cols-2 my-g-12">
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-6"
+              >my-flex-row</code
+            >
+            <div
+              class="my-dp-flex my-flex-row my-g-6 my-bg-111111 my-rounded-8 my-p-12"
+            >
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                C
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-6"
+              >my-flex-row-rev</code
+            >
+            <div
+              class="my-dp-flex my-flex-row-rev my-g-6 my-bg-111111 my-rounded-8 my-p-12"
+            >
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                C
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-6"
+              >my-flex-col</code
+            >
+            <div
+              class="my-dp-flex my-flex-col my-g-6 my-bg-111111 my-rounded-8 my-p-12"
+            >
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                C
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-6"
+              >my-flex-col-rev</code
+            >
+            <div
+              class="my-dp-flex my-flex-col-rev my-g-6 my-bg-111111 my-rounded-8 my-p-12"
+            >
+              <div
+                class="my-bg-f59e0b my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-f59e0b my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-f59e0b my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                C
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 15. JUSTIFY CONTENT ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">
+          my-justify-{start|center|end|between|around|evenly}
+        </p>
+        <div class="my-dp-flex my-flex-col my-g-8">
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >start</code
+            >
+            <div
+              class="my-dp-flex my-justify-start my-g-6 my-bg-111111 my-rounded-8 my-p-10"
+            >
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                C
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >center</code
+            >
+            <div
+              class="my-dp-flex my-justify-center my-g-6 my-bg-111111 my-rounded-8 my-p-10"
+            >
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                C
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4">end</code>
+            <div
+              class="my-dp-flex my-justify-end my-g-6 my-bg-111111 my-rounded-8 my-p-10"
+            >
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                C
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >between</code
+            >
+            <div
+              class="my-dp-flex my-justify-between my-bg-111111 my-rounded-8 my-p-10"
+            >
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                C
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >around</code
+            >
+            <div
+              class="my-dp-flex my-justify-around my-bg-111111 my-rounded-8 my-p-10"
+            >
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                C
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >evenly</code
+            >
+            <div
+              class="my-dp-flex my-justify-evenly my-bg-111111 my-rounded-8 my-p-10"
+            >
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                C
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 16. ALIGN ITEMS ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-items-{start|center|end|stretch}</p>
+        <div class="my-dp-grid my-cols-2 my-g-12">
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >items-start</code
+            >
+            <div
+              class="my-dp-flex my-items-start my-g-6 my-bg-111111 my-rounded-8 my-p-10 my-h-60"
+            >
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >items-center</code
+            >
+            <div
+              class="my-dp-flex my-items-center my-g-6 my-bg-111111 my-rounded-8 my-p-10 my-h-60"
+            >
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >items-end</code
+            >
+            <div
+              class="my-dp-flex my-items-end my-g-6 my-bg-111111 my-rounded-8 my-p-10 my-h-60"
+            >
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >items-stretch</code
+            >
+            <div
+              class="my-dp-flex my-items-stretch my-g-6 my-bg-111111 my-rounded-8 my-p-10 my-h-60"
+            >
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-p-8 my-f-11 my-text-0a0a0a"
+              >
+                B
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 17. ALIGN CONTENT ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">
+          my-align-{start|center|end|stretch|between|around|evenly} —
+          cross-axis, multi-row
+        </p>
+        <div class="my-dp-grid my-cols-2 my-g-12">
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >align-start</code
+            >
+            <div
+              class="my-dp-flex flex-wrap my-align-start my-g-4 my-bg-111111 my-rounded-8 my-p-8 my-h-80"
+              style="width: 180px"
+            >
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                C
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                D
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >align-center</code
+            >
+            <div
+              class="my-dp-flex flex-wrap my-align-center my-g-4 my-bg-111111 my-rounded-8 my-p-8 my-h-80"
+              style="width: 180px"
+            >
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                C
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                D
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >align-end</code
+            >
+            <div
+              class="my-dp-flex flex-wrap my-align-end my-g-4 my-bg-111111 my-rounded-8 my-p-8 my-h-80"
+              style="width: 180px"
+            >
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                C
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                D
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-4"
+              >align-between</code
+            >
+            <div
+              class="my-dp-flex flex-wrap my-align-between my-g-4 my-bg-111111 my-rounded-8 my-p-8 my-h-80"
+              style="width: 180px"
+            >
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                A
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                B
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                C
+              </div>
+              <div
+                class="my-bg-a78bfa my-rounded-4 my-p-6 my-f-10 my-text-0a0a0a"
+              >
+                D
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 18. GRID COLS & ROWS ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-cols-{n} · my-rows-{n}</p>
+        <div class="my-dp-flex my-g-24 flex-wrap">
+          <div class="my-dp-flex my-flex-col my-g-8">
+            <code class="my-text-444444 my-f-11"
+              >my-dp-grid my-cols-3 my-g-8</code
+            >
+            <div class="my-dp-grid my-cols-3 my-g-8">
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-10 my-f-11 my-text-0a0a0a my-text-center"
+              >
+                1
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-10 my-f-11 my-text-0a0a0a my-text-center"
+              >
+                2
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-10 my-f-11 my-text-0a0a0a my-text-center"
+              >
+                3
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-10 my-f-11 my-text-0a0a0a my-text-center"
+              >
+                4
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-10 my-f-11 my-text-0a0a0a my-text-center"
+              >
+                5
+              </div>
+              <div
+                class="my-bg-22c55e my-rounded-4 my-p-10 my-f-11 my-text-0a0a0a my-text-center"
+              >
+                6
+              </div>
+            </div>
+          </div>
+          <div class="my-dp-flex my-flex-col my-g-8">
+            <code class="my-text-444444 my-f-11"
+              >my-dp-grid my-rows-3 my-cols-2 my-g-8</code
+            >
+            <div
+              class="my-dp-grid my-rows-3 my-cols-2 my-g-8"
+              style="height: 120px"
+            >
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-f-11 my-text-0a0a0a my-dp-flex my-items-center my-justify-center"
+              >
+                1
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-f-11 my-text-0a0a0a my-dp-flex my-items-center my-justify-center"
+              >
+                2
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-f-11 my-text-0a0a0a my-dp-flex my-items-center my-justify-center"
+              >
+                3
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-f-11 my-text-0a0a0a my-dp-flex my-items-center my-justify-center"
+              >
+                4
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-f-11 my-text-0a0a0a my-dp-flex my-items-center my-justify-center"
+              >
+                5
+              </div>
+              <div
+                class="my-bg-fb7185 my-rounded-4 my-f-11 my-text-0a0a0a my-dp-flex my-items-center my-justify-center"
+              >
+                6
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 19. BORDER ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-border-{w}-{color}-{solid|dashed|dotted}</p>
+        <div class="my-dp-flex my-g-12 flex-wrap">
+          <div class="my-rounded-8 my-p-14 my-border-1-22c55e">
+            <code class="my-text-22c55e my-f-12">border-1-22c55e (solid)</code>
+          </div>
+          <div class="my-rounded-8 my-p-14 my-border-2-fb7185-dashed">
+            <code class="my-text-fb7185 my-f-12">border-2-fb7185-dashed</code>
+          </div>
+          <div class="my-rounded-8 my-p-14 my-border-3-a78bfa-dotted">
+            <code class="my-text-a78bfa my-f-12">border-3-a78bfa-dotted</code>
+          </div>
+          <div class="my-rounded-8 my-p-14 my-border-1-red">
+            <code class="my-text-red my-f-12">border-1-red (named)</code>
+          </div>
+          <div class="my-rounded-8 my-p-14 my-border-4-f59e0b">
+            <code class="my-text-f59e0b my-f-12">border-4-f59e0b</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 20. BORDER RADIUS ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-rounded-{n}</p>
+        <div class="my-dp-flex my-g-12 my-items-center flex-wrap">
+          <div
+            class="my-bg-22c55e my-w-60 my-h-60 my-rounded-0 my-dp-flex my-items-center my-justify-center"
+          >
+            <code class="my-text-0a0a0a my-f-10">0</code>
+          </div>
+          <div
+            class="my-bg-22c55e my-w-60 my-h-60 my-rounded-4 my-dp-flex my-items-center my-justify-center"
+          >
+            <code class="my-text-0a0a0a my-f-10">4</code>
+          </div>
+          <div
+            class="my-bg-22c55e my-w-60 my-h-60 my-rounded-8 my-dp-flex my-items-center my-justify-center"
+          >
+            <code class="my-text-0a0a0a my-f-10">8</code>
+          </div>
+          <div
+            class="my-bg-22c55e my-w-60 my-h-60 my-rounded-16 my-dp-flex my-items-center my-justify-center"
+          >
+            <code class="my-text-0a0a0a my-f-10">16</code>
+          </div>
+          <div
+            class="my-bg-22c55e my-w-60 my-h-60 my-rounded-999 my-dp-flex my-items-center my-justify-center"
+          >
+            <code class="my-text-0a0a0a my-f-10">999</code>
+          </div>
+          <span
+            class="my-bg-22c55e my-text-0a0a0a my-fw-700 my-f-12 my-pt-6 my-pb-6 my-pl-16 my-pr-16 my-rounded-999"
+            >pill badge</span
+          >
+        </div>
+      </div>
+
+      <!-- ── 21. POSITION ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">
+          my-fix-{rel|abs|fixed|sticky} · my-t · my-r · my-b · my-l · my-z
+        </p>
+        <div class="my-dp-grid my-cols-2 my-g-16">
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-8"
+              >my-fix-rel + my-fix-abs with offsets</code
+            >
+            <div
+              class="my-fix-rel my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-h-100"
+            >
+              <span
+                class="my-fix-abs my-t-8 my-l-8 my-bg-22c55e my-text-0a0a0a my-f-10 my-fw-700 my-rounded-4 my-pt-3 my-pb-3 my-pl-8 my-pr-8"
+                >top-left (t-8 l-8)</span
+              >
+              <span
+                class="my-fix-abs my-b-8 my-r-8 my-bg-fb7185 my-text-0a0a0a my-f-10 my-fw-700 my-rounded-4 my-pt-3 my-pb-3 my-pl-8 my-pr-8"
+                >bottom-right (b-8 r-8)</span
+              >
+              <span
+                class="my-fix-abs my-t-8 my-r-8 my-bg-a78bfa my-text-0a0a0a my-f-10 my-fw-700 my-rounded-4 my-pt-3 my-pb-3 my-pl-8 my-pr-8"
+                >top-right</span
+              >
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-8"
+              >my-z-{n} — stacking order</code
+            >
+            <div class="my-fix-rel my-h-100">
+              <div
+                class="my-fix-abs my-t-0 my-l-0 my-bg-22c55e my-rounded-8 my-z-10 my-p-12 my-f-11 my-text-0a0a0a"
+              >
+                z-10 (front)
+              </div>
+              <div
+                class="my-fix-abs my-t-16 my-l-16 my-bg-a78bfa my-rounded-8 my-z-5 my-p-12 my-f-11 my-text-0a0a0a"
+              >
+                z-5
+              </div>
+              <div
+                class="my-fix-abs my-t-32 my-l-32 my-bg-fb7185 my-rounded-8 my-z-1 my-p-12 my-f-11 my-text-0a0a0a"
+              >
+                z-1 (back)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 22. OVERFLOW ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">
+          my-ovr-{hidden|auto|scroll} · my-ovr-x/y-{hidden|auto}
+        </p>
+        <div class="my-dp-grid my-cols-2 my-g-12">
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-6"
+              >my-ovr-hidden</code
+            >
+            <div
+              class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-h-60 my-ovr-hidden my-p-10"
+            >
+              <div
+                class="my-bg-22c55e22 my-rounded-4 my-p-8 my-f-11 my-text-22c55e"
+                style="height: 140px"
+              >
+                overflowing content is clipped
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-6"
+              >my-ovr-auto</code
+            >
+            <div
+              class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-h-60 my-ovr-auto my-p-10"
+            >
+              <div
+                class="my-bg-fb718522 my-rounded-4 my-p-8 my-f-11 my-text-fb7185"
+                style="height: 140px"
+              >
+                overflowing content — scrollable
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-6"
+              >my-ovr-scroll</code
+            >
+            <div
+              class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-h-60 my-ovr-scroll my-p-10"
+            >
+              <div
+                class="my-bg-a78bfa22 my-rounded-4 my-p-8 my-f-11 my-text-a78bfa"
+                style="height: 140px"
+              >
+                always shows scrollbar
+              </div>
+            </div>
+          </div>
+          <div>
+            <code class="my-text-444444 my-f-11 my-dp-block my-mb-6"
+              >my-ovr-x-auto</code
+            >
+            <div
+              class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-h-60 my-ovr-x-auto my-p-10"
+              style="overflow-y: hidden"
+            >
+              <div
+                class="my-bg-f59e0b22 my-rounded-4 my-p-8 my-f-11 my-text-f59e0b"
+                style="width: 500px; white-space: nowrap"
+              >
+                horizontal overflow — scroll left/right →→→→→→→→→→→
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 23. TRANSFORMS ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">my-scale · my-rotate · my-tX · my-tY</p>
+        <div
+          class="my-dp-flex my-g-48 flex-wrap my-items-center"
+          style="min-height: 120px"
+        >
+          <div class="my-dp-flex my-flex-col my-items-center my-g-12">
+            <div class="my-bg-22c55e my-rounded-8 my-p-14 my-scale-1.3">
+              <code class="my-text-0a0a0a my-f-11">scale-1.3</code>
+            </div>
+          </div>
+          <div class="my-dp-flex my-flex-col my-items-center my-g-12">
+            <div class="my-bg-fb7185 my-rounded-8 my-p-14 my-rotate-15deg">
+              <code class="my-text-0a0a0a my-f-11">rotate-15deg</code>
+            </div>
+          </div>
+          <div class="my-dp-flex my-flex-col my-items-center my-g-12">
+            <div class="my-bg-a78bfa my-rounded-8 my-p-14 my-tX-24">
+              <code class="my-text-0a0a0a my-f-11">tX-24</code>
+            </div>
+          </div>
+          <div class="my-dp-flex my-flex-col my-items-center my-g-12">
+            <div class="my-bg-f59e0b my-rounded-8 my-p-14 my-tY-16">
+              <code class="my-text-0a0a0a my-f-11">tY-16</code>
+            </div>
+          </div>
+          <div class="my-dp-flex my-flex-col my-items-center my-g-12">
+            <div class="my-bg-14b8a6 my-rounded-8 my-p-14 my-scale-0.7">
+              <code class="my-text-0a0a0a my-f-11">scale-0.7</code>
+            </div>
+          </div>
+          <div class="my-dp-flex my-flex-col my-items-center my-g-12">
+            <div class="my-bg-818cf8 my-rounded-8 my-p-14 my-rotate-45deg">
+              <code class="my-text-0a0a0a my-f-11">rotate-45deg</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 24. TRANSITION ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">
+          my-transition-{property}-{duration}-{timing} — hover the buttons
+        </p>
+        <div class="my-dp-flex my-g-12 flex-wrap">
+          <button
+            class="my-bg-22c55e my-text-0a0a0a my-fw-700 my-f-13 my-pt-10 my-pb-10 my-pl-20 my-pr-20 my-rounded-8 my-cur-ptr my-transition-all-0.3-ease"
+            style="border: none"
+            onmouseenter="this.style.transform = 'scale(1.08)'"
+            onmouseleave="this.style.transform = ''"
+          >
+            all · 0.3s · ease
+          </button>
+          <button
+            class="my-bg-111111 my-border-1-333333 my-text-e8e8e8 my-fw-600 my-f-13 my-pt-10 my-pb-10 my-pl-20 my-pr-20 my-rounded-8 my-cur-ptr my-transition-all-0.18-ease"
+            style="border: 1px solid #333"
+            onmouseenter="
+              this.style.backgroundColor = '#22c55e';
+              this.style.color = '#0a0a0a';
+            "
+            onmouseleave="
+              this.style.backgroundColor = '';
+              this.style.color = '';
+            "
+          >
+            all · 0.18s · ease
+          </button>
+          <button
+            class="my-bg-111111 my-border-1-333333 my-text-555555 my-fw-600 my-f-13 my-pt-10 my-pb-10 my-pl-20 my-pr-20 my-rounded-8 my-cur-ptr my-transition-all-0.5-ease-in-out"
+            style="border: 1px solid #333"
+            onmouseenter="
+              this.style.borderColor = '#a78bfa';
+              this.style.color = '#a78bfa';
+            "
+            onmouseleave="
+              this.style.borderColor = '';
+              this.style.color = '';
+            "
+          >
+            all · 0.5s · ease-in-out
+          </button>
+          <button
+            class="my-bg-111111 my-border-1-333333 my-text-555555 my-fw-600 my-f-13 my-pt-10 my-pb-10 my-pl-20 my-pr-20 my-rounded-8 my-cur-ptr my-transition-all-1-linear"
+            style="border: 1px solid #333"
+            onmouseenter="
+              this.style.borderColor = '#f59e0b';
+              this.style.color = '#f59e0b';
+            "
+            onmouseleave="
+              this.style.borderColor = '';
+              this.style.color = '';
+            "
+          >
+            all · 1s · linear
+          </button>
+        </div>
+      </div>
+
+      <!-- ── 25. CURSOR ── -->
+      <div class="my-mb-64">
+        <p class="prop-label">
+          my-cur-{ptr|NA|text|help|move|grab|crosshair|wait}
+        </p>
+        <div class="my-dp-flex my-g-8 flex-wrap">
+          <div
+            class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-cur-ptr"
+          >
+            <code class="my-text-22c55e my-f-12">cur-ptr</code>
+          </div>
+          <div
+            class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-cur-NA"
+          >
+            <code class="my-text-fb7185 my-f-12">cur-NA</code>
+          </div>
+          <div
+            class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-cur-text"
+          >
+            <code class="my-text-a78bfa my-f-12">cur-text</code>
+          </div>
+          <div
+            class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-cur-help"
+          >
+            <code class="my-text-f59e0b my-f-12">cur-help</code>
+          </div>
+          <div
+            class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-cur-move"
+          >
+            <code class="my-text-14b8a6 my-f-12">cur-move</code>
+          </div>
+          <div
+            class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-cur-grab"
+          >
+            <code class="my-text-818cf8 my-f-12">cur-grab</code>
+          </div>
+          <div
+            class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-cur-crosshair"
+          >
+            <code class="my-text-e8e8e8 my-f-12">cur-crosshair</code>
+          </div>
+          <div
+            class="my-bg-111111 my-border-1-1e1e1e my-rounded-8 my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-cur-wait"
+          >
+            <code class="my-text-555555 my-f-12">cur-wait</code>
+          </div>
+        </div>
+        <p class="my-f-11 my-text-333333 my-mt-10">
+          Hover each box to see the cursor change.
+        </p>
+      </div>
+    </section>
+
+    <div class="h-divider"></div>
+
+    <!-- ═══ CHEAT SHEET ═══ -->
+    <section
+      id="cheatsheet"
+      class="my-pt-80 my-pb-80"
+      style="background: #0d0d0d"
+    >
+      <div class="my-wmax-1280 my-mx-auto my-pl-32 my-pr-32">
+        <p
+          class="my-text-22c55e my-f-13 my-fw-600 my-text-uppercase tracking-wide my-mb-12"
+        >
+          Quick reference
+        </p>
+        <h2
+          class="display-font my-fw-700 my-f-42 my-text-e8e8e8 leading-snug my-mb-40"
+        >
+          Cheat sheet.
+        </h2>
+        <div class="my-dp-grid my-cols-2 my-g-2">
+          <div class="my-dp-flex my-flex-col my-g-2">
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-22c55e my-f-13">my-bg-{hex|name}</code
+              ><span class="my-text-333333 my-f-12">background-color</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-22c55e my-f-13"
+                >my-text-{hex|name|align|transform}</code
+              ><span class="my-text-333333 my-f-12"
+                >color / align / transform</span
+              >
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-22c55e my-f-13">my-op-{0–1}</code
+              ><span class="my-text-333333 my-f-12">opacity</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-a78bfa my-f-13">my-f-{n}</code
+              ><span class="my-text-333333 my-f-12">font-size px</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-a78bfa my-f-13">my-fw-{100–900}</code
+              ><span class="my-text-333333 my-f-12">font-weight</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-a78bfa my-f-13"
+                >my-dec-{underline|overline|through}-{c}-{w}</code
+              ><span class="my-text-333333 my-f-12">text-decoration</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-f59e0b my-f-13"
+                >my-p-{n} · my-pt/pr/pb/pl-{n}</code
+              ><span class="my-text-333333 my-f-12">padding</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-f59e0b my-f-13"
+                >my-m-{n} · my-mt/mr/mb/ml-{n}</code
+              ><span class="my-text-333333 my-f-12">margin</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-f59e0b my-f-13"
+                >my-mx-{n|auto} · my-my-{n}</code
+              ><span class="my-text-333333 my-f-12">axis margins</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-f59e0b my-f-13">my-g-{n}</code
+              ><span class="my-text-333333 my-f-12">row+col gap</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-14b8a6 my-f-13">my-w-{n} · my-h-{n}</code
+              ><span class="my-text-333333 my-f-12">width / height px</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-14b8a6 my-f-13"
+                >my-wmin · my-wmax · my-hmin · my-hmax</code
+              ><span class="my-text-333333 my-f-12">min/max</span>
+            </div>
+          </div>
+          <div class="my-dp-flex my-flex-col my-g-2">
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-fb7185 my-f-13"
+                >my-dp-{flex|grid|block|inline|inline-block|none}</code
+              ><span class="my-text-333333 my-f-12">display</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-fb7185 my-f-13"
+                >my-flex-{row|col|row-rev|col-rev}</code
+              ><span class="my-text-333333 my-f-12">flex-direction</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-fb7185 my-f-13"
+                >my-justify-{start|center|end|between|around|evenly}</code
+              ><span class="my-text-333333 my-f-12">justify-content</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-fb7185 my-f-13"
+                >my-items-{start|center|end|stretch}</code
+              ><span class="my-text-333333 my-f-12">align-items</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-fb7185 my-f-13"
+                >my-align-{start|center|end|stretch|between|around|evenly}</code
+              ><span class="my-text-333333 my-f-12">align-content</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-fb7185 my-f-13"
+                >my-cols-{n} · my-rows-{n}</code
+              ><span class="my-text-333333 my-f-12">grid template</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-818cf8 my-f-13"
+                >my-fix-{rel|abs|fixed|sticky}</code
+              ><span class="my-text-333333 my-f-12">position</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-818cf8 my-f-13"
+                >my-t · my-r · my-b · my-l · my-z</code
+              ><span class="my-text-333333 my-f-12">offsets + z-index</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-818cf8 my-f-13"
+                >my-border-{w}-{color}-{solid|dashed|dotted}</code
+              ><span class="my-text-333333 my-f-12">border</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-818cf8 my-f-13">my-rounded-{n}</code
+              ><span class="my-text-333333 my-f-12">border-radius px</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-818cf8 my-f-13"
+                >my-ovr-{hidden|auto|scroll} · my-ovr-x/y-{val}</code
+              ><span class="my-text-333333 my-f-12">overflow</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-818cf8 my-f-13"
+                >my-scale · my-rotate · my-tX · my-tY</code
+              ><span class="my-text-333333 my-f-12">transform</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-818cf8 my-f-13"
+                >my-transition-{prop}-{dur}-{timing}</code
+              ><span class="my-text-333333 my-f-12">transition</span>
+            </div>
+            <div
+              class="my-bg-111111 my-dp-flex my-justify-between my-items-center my-pt-10 my-pb-10 my-pl-16 my-pr-16 my-rounded-8"
+            >
+              <code class="my-text-818cf8 my-f-13"
+                >my-cur-{ptr|NA|text|help|move|grab|crosshair|wait}</code
+              ><span class="my-text-333333 my-f-12">cursor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="h-divider"></div>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="my-pt-80 my-pb-80">
+      <div class="my-wmax-1280 my-mx-auto my-pl-32 my-pr-32">
+        <div class="my-mb-48 my-ovr-hidden">
+          <div
+            class="display-font my-fw-800 my-text-1a1a1a leading-none tracking-tight my-text-uppercase"
+            style="font-size: clamp(56px, 9vw, 112px); letter-spacing: -0.03em"
+          >
+            my-winder
+          </div>
+        </div>
+        <div class="my-dp-grid my-cols-2 my-g-40">
+          <div class="my-dp-flex my-flex-col my-g-24">
+            <p class="my-f-16 my-text-555555 leading-loose my-wmax-360">
+              utility-first CSS-in-JS for the browser. zero dependencies. no
+              bundler. no build step. works anywhere with a DOM.
+            </p>
+            <div
+              class="my-bg-111111 my-border-1-1e1e1e my-rounded-10 my-pt-16 my-pb-16 my-pl-20 my-pr-20 my-dp-flex my-items-center my-justify-between my-wmax-380 my-cur-ptr code-pill my-transition-all-0.18-ease"
+              onclick="navigator.clipboard.writeText('npm install my-winder')"
+            >
+              <code class="my-text-aaaaaa my-f-16"
+                >$ npm install my-winder</code
+              >
+              <span
+                class="my-text-22c55e my-f-13 my-fw-700 my-text-uppercase tracking"
+                >copy ⎘</span
+              >
+            </div>
+            <div class="my-dp-flex my-g-12">
+              <a
+                href="#demos"
+                class="my-bg-22c55e my-text-0a0a0a my-fw-700 my-f-15 my-pt-11 my-pb-11 my-pl-22 my-pr-22 my-rounded-8 my-cur-ptr h-bright my-transition-all-0.18-ease"
+                >Demos →</a
+              >
+              <a
+                href="#cheatsheet"
+                class="my-bg-161616 my-border-1-252525 my-text-666666 my-f-15 my-pt-11 my-pb-11 my-pl-22 my-pr-22 my-rounded-8 my-cur-ptr h-bg my-transition-all-0.18-ease"
+                >Cheat Sheet</a
+              >
+            </div>
+          </div>
+          <div
+            class="my-bg-111111 my-border-1-1e1e1e my-rounded-12 my-p-32 my-dp-flex my-justify-between my-items-center"
+          >
+            <div class="my-dp-flex my-g-32">
+              <div class="my-dp-flex my-flex-col my-g-6">
+                <span class="display-font my-text-22c55e my-fw-800 my-f-36"
+                  >0</span
+                ><span class="my-text-444444 my-f-13 my-text-uppercase tracking"
+                  >deps</span
+                >
+              </div>
+              <div class="my-dp-flex my-flex-col my-g-6">
+                <span class="display-font my-text-22c55e my-fw-800 my-f-36"
+                  >~3kb</span
+                ><span class="my-text-444444 my-f-13 my-text-uppercase tracking"
+                  >gzip</span
+                >
+              </div>
+              <div class="my-dp-flex my-flex-col my-g-6">
+                <span class="display-font my-text-22c55e my-fw-800 my-f-36"
+                  >ESM</span
+                ><span class="my-text-444444 my-f-13 my-text-uppercase tracking"
+                  >module</span
+                >
+              </div>
+            </div>
+            <span
+              class="my-bg-22c55e my-text-0a0a0a my-f-13 my-fw-700 my-pt-5 my-pb-5 my-pl-12 my-pr-12 my-rounded-999 my-text-uppercase tracking"
+              >ISC</span
+            >
+          </div>
+        </div>
+        <div
+          class="my-mt-60 my-pt-24 my-dp-flex my-justify-between my-items-center"
+          style="border-top: 1px solid #1a1a1a"
+        >
+          <span class="my-text-2a2a2a my-f-14"
+            >my-winder · by Janardhan Verma · built on the web platform</span
+          >
+          <span class="my-text-2a2a2a my-f-14"
+            >zero-config · zero-deps · ESM · v1.1.7</span
+          >
+        </div>
+      </div>
+    </footer>
+
+    <script type="module">
+      import { applyMyStyles } from "https://esm.sh/my-winder@1.1.7";
+      applyMyStyles();
+    </script>
+  </body>
+</html>
